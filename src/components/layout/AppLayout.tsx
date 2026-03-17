@@ -3,11 +3,11 @@ import { LayoutDashboard, BookOpen, Timer, BarChart3, Settings } from "lucide-re
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { path: "/", icon: LayoutDashboard, label: "Dashboard" },
-  { path: "/subjects", icon: BookOpen, label: "Subjects" },
-  { path: "/focus", icon: Timer, label: "Focus" },
-  { path: "/analytics", icon: BarChart3, label: "Analytics" },
-  { path: "/settings", icon: Settings, label: "Settings" },
+  { path: "/", icon: LayoutDashboard, label: "Início" },
+  { path: "/subjects", icon: BookOpen, label: "Matérias" },
+  { path: "/focus", icon: Timer, label: "Foco" },
+  { path: "/analytics", icon: BarChart3, label: "Relatórios" },
+  { path: "/settings", icon: Settings, label: "Config" },
 ];
 
 export default function AppLayout() {
@@ -20,7 +20,6 @@ export default function AppLayout() {
         <Outlet />
       </main>
 
-      {/* Bottom Navigation */}
       <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border z-50">
         <div className="flex items-center justify-around h-16 max-w-lg mx-auto px-2">
           {navItems.map(({ path, icon: Icon, label }) => {

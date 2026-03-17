@@ -5,8 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 
 type Phase = "focus" | "break";
 
-const FOCUS_DURATION = 25 * 60; // 25 minutes
-const BREAK_DURATION = 5 * 60;  // 5 minutes
+const FOCUS_DURATION = 25 * 60;
+const BREAK_DURATION = 5 * 60;
 
 export default function FocusMode() {
   const [seconds, setSeconds] = useState(FOCUS_DURATION);
@@ -65,33 +65,18 @@ export default function FocusMode() {
         transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
         className="flex flex-col items-center"
       >
-        {/* Phase indicator */}
         <span className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground mb-8">
-          {phase === "focus" ? "Deep Work" : "Break Time"}
+          {phase === "focus" ? "Foco Profundo" : "Intervalo"}
         </span>
 
-        {/* Timer ring */}
         <div className="relative mb-8">
           <svg width={320} height={320} className="-rotate-90">
+            <circle cx={160} cy={160} r={radius} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth={4} />
             <circle
-              cx={160}
-              cy={160}
-              r={radius}
-              fill="none"
-              stroke="rgba(255,255,255,0.08)"
-              strokeWidth={4}
-            />
-            <circle
-              cx={160}
-              cy={160}
-              r={radius}
-              fill="none"
+              cx={160} cy={160} r={radius} fill="none"
               stroke={phase === "focus" ? "hsl(243, 75%, 59%)" : "hsl(142, 71%, 45%)"}
-              strokeWidth={4}
-              strokeDasharray={circumference}
-              strokeDashoffset={offset}
-              strokeLinecap="round"
-              className="transition-all duration-1000 ease-linear"
+              strokeWidth={4} strokeDasharray={circumference} strokeDashoffset={offset}
+              strokeLinecap="round" className="transition-all duration-1000 ease-linear"
             />
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
@@ -108,17 +93,13 @@ export default function FocusMode() {
           </div>
         </div>
 
-        {/* Subject label */}
         <p className="text-muted-foreground tracking-widest uppercase text-xs mb-12">
-          Organic Chemistry
+          Química Orgânica
         </p>
 
-        {/* Controls */}
         <div className="flex items-center gap-4">
           <Button
-            variant="ghost"
-            size="icon"
-            onClick={reset}
+            variant="ghost" size="icon" onClick={reset}
             className="text-muted-foreground hover:text-background hover:bg-muted/20 h-12 w-12"
           >
             <RotateCcw className="h-5 w-5" />
@@ -133,8 +114,7 @@ export default function FocusMode() {
           </Button>
 
           <Button
-            variant="ghost"
-            size="icon"
+            variant="ghost" size="icon"
             onClick={() => {
               setIsActive(false);
               setSessions((c) => c + 1);
@@ -147,7 +127,6 @@ export default function FocusMode() {
           </Button>
         </div>
 
-        {/* Sessions count */}
         <div className="mt-10 flex items-center gap-2">
           {Array.from({ length: 4 }).map((_, i) => (
             <div
@@ -158,7 +137,7 @@ export default function FocusMode() {
             />
           ))}
           <span className="text-xs text-muted-foreground ml-2 tabular-nums">
-            {sessionsCompleted}/4 sessions
+            {sessionsCompleted}/4 sessões
           </span>
         </div>
       </motion.div>

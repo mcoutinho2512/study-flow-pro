@@ -8,7 +8,6 @@ interface StudyCardProps {
   startTime: string;
   endTime: string;
   duration: string;
-  color?: string;
   isNext?: boolean;
   onStart?: () => void;
 }
@@ -27,7 +26,7 @@ export default function StudyCard({
       <div className="rounded-2xl bg-primary p-5 shadow-elevated">
         <div className="flex items-center justify-between">
           <span className="text-xs font-semibold uppercase tracking-widest text-primary-foreground/70">
-            Up Next
+            Próxima
           </span>
           <Button
             variant="hero"
@@ -36,7 +35,7 @@ export default function StudyCard({
             onClick={onStart}
           >
             <Play className="h-3.5 w-3.5" />
-            Start
+            Iniciar
           </Button>
         </div>
         <h3 className="mt-2 text-xl font-semibold tracking-tight text-primary-foreground">
