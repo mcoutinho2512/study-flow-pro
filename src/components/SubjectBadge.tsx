@@ -34,8 +34,8 @@ export default function SubjectBadge({ name, color, sessions, hours, onClick, cl
       <h3 className="font-semibold tracking-tight">{name}</h3>
       {(sessions !== undefined || hours) && (
         <div className="flex items-center gap-3 mt-2 text-xs opacity-75">
-          {sessions !== undefined && <span>{sessions} sessions</span>}
-          {hours && <span>{hours}h studied</span>}
+          {sessions !== undefined && <span>{sessions} sessões</span>}
+          {hours && <span>{hours}h estudadas</span>}
         </div>
       )}
     </button>

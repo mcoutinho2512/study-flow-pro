@@ -13,12 +13,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 const initialSubjects = [
-  { name: "Advanced Mathematics", color: "indigo", sessions: 24, hours: "36" },
-  { name: "Organic Chemistry", color: "emerald", sessions: 18, hours: "27" },
-  { name: "Constitutional Law", color: "amber", sessions: 15, hours: "22.5" },
-  { name: "Data Structures", color: "sky", sessions: 20, hours: "30" },
-  { name: "Molecular Biology", color: "rose", sessions: 12, hours: "18" },
-  { name: "Statistics", color: "violet", sessions: 10, hours: "15" },
+  { name: "Matemática Avançada", color: "indigo", sessions: 24, hours: "36" },
+  { name: "Química Orgânica", color: "emerald", sessions: 18, hours: "27" },
+  { name: "Direito Constitucional", color: "amber", sessions: 15, hours: "22,5" },
+  { name: "Estrutura de Dados", color: "sky", sessions: 20, hours: "30" },
+  { name: "Biologia Molecular", color: "rose", sessions: 12, hours: "18" },
+  { name: "Estatística", color: "violet", sessions: 10, hours: "15" },
 ];
 
 const colorOptions = ["indigo", "emerald", "amber", "sky", "rose", "violet"];
@@ -41,8 +41,8 @@ export default function Subjects() {
     <div className="px-5 pt-12 pb-6 max-w-lg mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">Subjects</h1>
-          <p className="text-muted-foreground mt-1">{subjects.length} active subjects</p>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">Matérias</h1>
+          <p className="text-muted-foreground mt-1">{subjects.length} matérias ativas</p>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
@@ -52,20 +52,20 @@ export default function Subjects() {
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>New Subject</DialogTitle>
+              <DialogTitle>Nova Matéria</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 mt-2">
               <div>
-                <Label>Name</Label>
+                <Label>Nome</Label>
                 <Input
-                  placeholder="e.g. Advanced Mathematics"
+                  placeholder="Ex: Matemática Avançada"
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
                   className="mt-1.5"
                 />
               </div>
               <div>
-                <Label>Color</Label>
+                <Label>Cor</Label>
                 <div className="flex gap-2 mt-1.5">
                   {colorOptions.map((c) => (
                     <button
@@ -73,7 +73,7 @@ export default function Subjects() {
                       onClick={() => setNewColor(c)}
                       className={`w-8 h-8 rounded-full border-2 transition-default ${
                         c === newColor ? "border-primary scale-110" : "border-transparent"
-                      } bg-${c}-400`}
+                      }`}
                       style={{
                         backgroundColor:
                           c === "indigo" ? "hsl(243, 75%, 59%)" :
@@ -87,7 +87,7 @@ export default function Subjects() {
                   ))}
                 </div>
               </div>
-              <Button onClick={addSubject} className="w-full">Create Subject</Button>
+              <Button onClick={addSubject} className="w-full">Criar Matéria</Button>
             </div>
           </DialogContent>
         </Dialog>

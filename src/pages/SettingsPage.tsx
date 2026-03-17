@@ -36,29 +36,27 @@ function SettingItem({ icon: Icon, label, description, onClick, danger }: Settin
 export default function SettingsPage() {
   return (
     <div className="px-5 pt-12 pb-6 max-w-lg mx-auto">
-      <h1 className="text-3xl font-bold tracking-tight text-foreground mb-6">Settings</h1>
+      <h1 className="text-3xl font-bold tracking-tight text-foreground mb-6">Configurações</h1>
 
-      {/* Profile Card */}
       <div className="rounded-2xl bg-card p-5 shadow-card mb-6 flex items-center gap-4">
         <div className="h-14 w-14 rounded-full bg-primary/10 flex items-center justify-center">
           <User className="h-6 w-6 text-primary" />
         </div>
         <div>
-          <p className="font-semibold text-foreground">StudyFlow User</p>
-          <p className="text-sm text-muted-foreground">user@example.com</p>
+          <p className="font-semibold text-foreground">Usuário StudyFlow</p>
+          <p className="text-sm text-muted-foreground">usuario@exemplo.com</p>
         </div>
       </div>
 
-      {/* Settings Groups */}
       <div className="rounded-2xl bg-card shadow-card mb-4 overflow-hidden">
-        <SettingItem icon={Bell} label="Notifications" description="Reminders, alerts, summaries" />
-        <SettingItem icon={Calendar} label="Google Calendar" description="Connect and sync" />
-        <SettingItem icon={Moon} label="Appearance" description="Theme and display" />
-        <SettingItem icon={Shield} label="Privacy & Security" description="Account protection" />
+        <SettingItem icon={Bell} label="Notificações" description="Lembretes, alertas, resumos" />
+        <SettingItem icon={Calendar} label="Google Calendar" description="Conectar e sincronizar" />
+        <SettingItem icon={Moon} label="Aparência" description="Tema e exibição" />
+        <SettingItem icon={Shield} label="Privacidade e Segurança" description="Proteção da conta" />
       </div>
 
       <div className="rounded-2xl bg-card shadow-card overflow-hidden">
-        <SettingItem icon={LogOut} label="Sign Out" danger />
+        <SettingItem icon={LogOut} label="Sair" danger />
       </div>
 
       <p className="text-center text-xs text-muted-foreground mt-8">StudyFlow v1.0.0</p>
