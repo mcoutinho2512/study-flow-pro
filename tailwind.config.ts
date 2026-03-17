@@ -13,6 +13,9 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'system-ui', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -57,33 +60,54 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        indigo: {
+          50: "hsl(243, 75%, 97%)",
+          100: "hsl(243, 75%, 93%)",
+          200: "hsl(243, 75%, 85%)",
+          300: "hsl(243, 75%, 75%)",
+          400: "hsl(243, 75%, 67%)",
+          500: "hsl(243, 75%, 59%)",
+          600: "hsl(243, 75%, 50%)",
+          700: "hsl(243, 75%, 42%)",
+          800: "hsl(243, 75%, 34%)",
+          900: "hsl(243, 75%, 25%)",
+        },
+        success: {
+          DEFAULT: "hsl(142, 71%, 45%)",
+          foreground: "hsl(0, 0%, 100%)",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        "2xl": "1rem",
+        "3xl": "1.5rem",
       },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
+        "pulse-ring": {
+          "0%": { transform: "scale(0.8)", opacity: "1" },
+          "100%": { transform: "scale(1.4)", opacity: "0" },
+        },
+        "count-down": {
+          "0%": { transform: "scale(1)" },
+          "50%": { transform: "scale(1.05)" },
+          "100%": { transform: "scale(1)" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "pulse-ring": "pulse-ring 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite",
+        "count-down": "count-down 1s ease-in-out",
       },
     },
   },
