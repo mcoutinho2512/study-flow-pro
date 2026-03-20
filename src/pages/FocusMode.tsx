@@ -1,22 +1,72 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Pause, Play, RotateCcw, Check } from "lucide-react";
+import { Pause, Play, RotateCcw, Check, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSubjects } from "@/hooks/useSubjects";
+import { useProfile } from "@/hooks/useProfile";
+import { useCreateSession, useUpdateSession } from "@/hooks/useStudySessions";
+import { toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type Phase = "focus" | "break";
 
-const FOCUS_DURATION = 25 * 60;
-const BREAK_DURATION = 5 * 60;
-
 export default function FocusMode() {
-  const [seconds, setSeconds] = useState(FOCUS_DURATION);
+  const { data: subjects = [] } = useSubjects();
+  const { data: profile } = useProfile();
+  const createSession = useCreateSession();
+  const updateSession = useUpdateSession();
+
+  const focusDuration = (profile?.focus_duration_minutes ?? 25) * 60;
+  const breakDuration = (profile?.break_duration_minutes ?? 5) * 60;
+
+  const [selectedSubjectId, setSelectedSubjectId] = useState<string>("");
+  const [seconds, setSeconds] = useState(focusDuration);
   const [isActive, setIsActive] = useState(false);
   const [phase, setPhase] = useState<Phase>("focus");
   const [sessionsCompleted, setSessions] = useState(0);
+  const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
+  const startedAtRef = useRef<Date | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const totalSeconds = phase === "focus" ? FOCUS_DURATION : BREAK_DURATION;
+  const totalSeconds = phase === "focus" ? focusDuration : breakDuration;
   const progress = ((totalSeconds - seconds) / totalSeconds) * 100;
+
+  // Update seconds when profile loads
+  useEffect(() => {
+    if (!isActive && phase === "focus") setSeconds(focusDuration);
+  }, [focusDuration]);
+
+  // Set first subject as default
+  useEffect(() => {
+    if (subjects.length > 0 && !selectedSubjectId) {
+      setSelectedSubjectId(subjects[0].id);
+    }
+  }, [subjects, selectedSubjectId]);
+
+  const selectedSubject = subjects.find((s) => s.id === selectedSubjectId);
+
+  const saveSession = useCallback(async () => {
+    if (!currentSessionId || !startedAtRef.current) return;
+    const now = new Date();
+    const durationSecs = Math.round((now.getTime() - startedAtRef.current.getTime()) / 1000);
+    try {
+      await updateSession.mutateAsync({
+        id: currentSessionId,
+        ended_at: now.toISOString(),
+        duration_seconds: durationSecs,
+      });
+    } catch {
+      toast.error("Erro ao salvar sessão.");
+    }
+    setCurrentSessionId(null);
+    startedAtRef.current = null;
+  }, [currentSessionId, updateSession]);
 
   const tick = useCallback(() => {
     setSeconds((s) => {
@@ -24,16 +74,17 @@ export default function FocusMode() {
         setIsActive(false);
         if (phase === "focus") {
           setSessions((c) => c + 1);
+          saveSession();
           setPhase("break");
-          return BREAK_DURATION;
+          return breakDuration;
         } else {
           setPhase("focus");
-          return FOCUS_DURATION;
+          return focusDuration;
         }
       }
       return s - 1;
     });
-  }, [phase]);
+  }, [phase, breakDuration, focusDuration, saveSession]);
 
   useEffect(() => {
     if (isActive) {
@@ -44,10 +95,41 @@ export default function FocusMode() {
     };
   }, [isActive, tick]);
 
+  const handlePlayPause = async () => {
+    if (!isActive) {
+      // Starting
+      if (phase === "focus" && !currentSessionId && selectedSubjectId) {
+        try {
+          const session = await createSession.mutateAsync({ subject_id: selectedSubjectId });
+          setCurrentSessionId(session.id);
+          startedAtRef.current = new Date();
+        } catch {
+          toast.error("Erro ao iniciar sessão.");
+          return;
+        }
+      }
+      setIsActive(true);
+    } else {
+      setIsActive(false);
+    }
+  };
+
   const reset = () => {
     setIsActive(false);
+    if (currentSessionId) saveSession();
     setPhase("focus");
-    setSeconds(FOCUS_DURATION);
+    setSeconds(focusDuration);
+  };
+
+  const completeManual = () => {
+    setIsActive(false);
+    if (phase === "focus") {
+      setSessions((c) => c + 1);
+      saveSession();
+      toast.success("Sessão salva!");
+    }
+    setPhase("focus");
+    setSeconds(focusDuration);
   };
 
   const minutes = Math.floor(seconds / 60);
@@ -65,9 +147,26 @@ export default function FocusMode() {
         transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
         className="flex flex-col items-center"
       >
-        <span className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground mb-8">
+        <span className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground mb-4">
           {phase === "focus" ? "Foco Profundo" : "Intervalo"}
         </span>
+
+        {subjects.length > 0 && !isActive && (
+          <div className="mb-6">
+            <Select value={selectedSubjectId} onValueChange={setSelectedSubjectId}>
+              <SelectTrigger className="w-56 bg-transparent border-muted/30 text-background">
+                <SelectValue placeholder="Selecione a matéria" />
+              </SelectTrigger>
+              <SelectContent>
+                {subjects.map((s) => (
+                  <SelectItem key={s.id} value={s.id}>
+                    {s.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
 
         <div className="relative mb-8">
           <svg width={320} height={320} className="-rotate-90">
@@ -94,7 +193,7 @@ export default function FocusMode() {
         </div>
 
         <p className="text-muted-foreground tracking-widest uppercase text-xs mb-12">
-          Química Orgânica
+          {isActive ? (selectedSubject?.name ?? "Matéria") : (selectedSubject?.name ?? "Selecione uma matéria")}
         </p>
 
         <div className="flex items-center gap-4">
@@ -106,21 +205,17 @@ export default function FocusMode() {
           </Button>
 
           <Button
-            onClick={() => setIsActive(!isActive)}
+            onClick={handlePlayPause}
             className="h-16 w-16 rounded-full bg-background text-foreground hover:bg-background/90 shadow-elevated"
             size="icon"
+            disabled={!selectedSubjectId && phase === "focus"}
           >
             {isActive ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6 ml-0.5" />}
           </Button>
 
           <Button
             variant="ghost" size="icon"
-            onClick={() => {
-              setIsActive(false);
-              setSessions((c) => c + 1);
-              setPhase("focus");
-              setSeconds(FOCUS_DURATION);
-            }}
+            onClick={completeManual}
             className="text-muted-foreground hover:text-accent hover:bg-accent/10 h-12 w-12"
           >
             <Check className="h-5 w-5" />

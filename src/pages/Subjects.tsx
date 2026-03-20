@@ -1,4 +1,4 @@
-import { Plus } from "lucide-react";
+import { Plus, Loader2, BookOpen, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SubjectBadge from "@/components/SubjectBadge";
 import { useState } from "react";
@@ -11,31 +11,65 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-const initialSubjects = [
-  { name: "Matemática Avançada", color: "indigo", sessions: 24, hours: "36" },
-  { name: "Química Orgânica", color: "emerald", sessions: 18, hours: "27" },
-  { name: "Direito Constitucional", color: "amber", sessions: 15, hours: "22,5" },
-  { name: "Estrutura de Dados", color: "sky", sessions: 20, hours: "30" },
-  { name: "Biologia Molecular", color: "rose", sessions: 12, hours: "18" },
-  { name: "Estatística", color: "violet", sessions: 10, hours: "15" },
-];
+import { useSubjects, useCreateSubject, useDeleteSubject } from "@/hooks/useSubjects";
+import { useStudySessions } from "@/hooks/useStudySessions";
+import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const colorOptions = ["indigo", "emerald", "amber", "sky", "rose", "violet"];
 
 export default function Subjects() {
-  const [subjects, setSubjects] = useState(initialSubjects);
+  const { data: subjects = [], isLoading } = useSubjects();
+  const { data: allSessions = [] } = useStudySessions();
+  const createSubject = useCreateSubject();
+  const deleteSubject = useDeleteSubject();
   const [newName, setNewName] = useState("");
   const [newColor, setNewColor] = useState("indigo");
   const [open, setOpen] = useState(false);
 
-  const addSubject = () => {
+  const addSubject = async () => {
     if (!newName.trim()) return;
-    setSubjects([...subjects, { name: newName, color: newColor, sessions: 0, hours: "0" }]);
-    setNewName("");
-    setNewColor("indigo");
-    setOpen(false);
+    try {
+      await createSubject.mutateAsync({ name: newName.trim(), color: newColor });
+      setNewName("");
+      setNewColor("indigo");
+      setOpen(false);
+      toast.success("Matéria criada!");
+    } catch {
+      toast.error("Erro ao criar matéria. Talvez já exista uma com esse nome.");
+    }
   };
+
+  const handleDelete = async (id: string, name: string) => {
+    try {
+      await deleteSubject.mutateAsync(id);
+      toast.success(`${name} arquivada.`);
+    } catch {
+      toast.error("Erro ao arquivar matéria.");
+    }
+  };
+
+  const getSubjectStats = (subjectId: string) => {
+    const sessions = allSessions.filter((s) => s.subject_id === subjectId);
+    const totalSeconds = sessions.reduce((acc, s) => acc + (s.duration_seconds ?? 0), 0);
+    return {
+      sessions: sessions.length,
+      hours: (totalSeconds / 3600).toFixed(1).replace(".", ","),
+    };
+  };
+
+  if (isLoading) {
+    return (
+      <div className="px-5 pt-12 pb-6 max-w-lg mx-auto">
+        <Skeleton className="h-10 w-40 mb-6" />
+        <div className="grid grid-cols-2 gap-3">
+          {[1, 2, 3, 4].map((i) => (
+            <Skeleton key={i} className="h-28 rounded-2xl" />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="px-5 pt-12 pb-6 max-w-lg mx-auto">
@@ -87,17 +121,46 @@ export default function Subjects() {
                   ))}
                 </div>
               </div>
-              <Button onClick={addSubject} className="w-full">Criar Matéria</Button>
+              <Button onClick={addSubject} className="w-full" disabled={createSubject.isPending}>
+                {createSubject.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Criar Matéria"}
+              </Button>
             </div>
           </DialogContent>
         </Dialog>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
-        {subjects.map((subject) => (
-          <SubjectBadge key={subject.name} {...subject} />
-        ))}
-      </div>
+      {subjects.length === 0 ? (
+        <div className="rounded-2xl bg-card p-6 shadow-card text-center">
+          <BookOpen className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
+          <p className="text-sm text-muted-foreground mb-4">Adicione sua primeira matéria para começar!</p>
+          <Button onClick={() => setOpen(true)} variant="hero">
+            <Plus className="h-4 w-4 mr-2" />
+            Nova Matéria
+          </Button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 gap-3">
+          {subjects.map((subject) => {
+            const stats = getSubjectStats(subject.id);
+            return (
+              <div key={subject.id} className="relative group">
+                <SubjectBadge
+                  name={subject.name}
+                  color={subject.color}
+                  sessions={stats.sessions}
+                  hours={stats.hours}
+                />
+                <button
+                  onClick={() => handleDelete(subject.id, subject.name)}
+                  className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

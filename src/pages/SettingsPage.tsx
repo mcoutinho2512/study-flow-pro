@@ -1,5 +1,19 @@
-import { Bell, Calendar, Moon, Shield, LogOut, ChevronRight, User } from "lucide-react";
+import { Bell, Calendar, Moon, Shield, LogOut, ChevronRight, User, Target, Timer } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
+import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 interface SettingItemProps {
   icon: React.ElementType;
@@ -34,32 +48,138 @@ function SettingItem({ icon: Icon, label, description, onClick, danger }: Settin
 }
 
 export default function SettingsPage() {
+  const { user, signOut } = useAuth();
+  const { data: profile } = useProfile();
+  const updateProfile = useUpdateProfile();
+  const navigate = useNavigate();
+  const [goalsOpen, setGoalsOpen] = useState(false);
+  const [timerOpen, setTimerOpen] = useState(false);
+
+  const [dailyGoal, setDailyGoal] = useState("");
+  const [weeklyGoal, setWeeklyGoal] = useState("");
+  const [monthlyGoal, setMonthlyGoal] = useState("");
+  const [focusDuration, setFocusDuration] = useState("");
+  const [breakDuration, setBreakDuration] = useState("");
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate("/auth");
+  };
+
+  const openGoals = () => {
+    setDailyGoal(String(profile?.daily_goal_hours ?? 4));
+    setWeeklyGoal(String(profile?.weekly_goal_hours ?? 25));
+    setMonthlyGoal(String(profile?.monthly_goal_hours ?? 120));
+    setGoalsOpen(true);
+  };
+
+  const saveGoals = async () => {
+    try {
+      await updateProfile.mutateAsync({
+        daily_goal_hours: Number(dailyGoal),
+        weekly_goal_hours: Number(weeklyGoal),
+        monthly_goal_hours: Number(monthlyGoal),
+      });
+      toast.success("Metas atualizadas!");
+      setGoalsOpen(false);
+    } catch {
+      toast.error("Erro ao salvar metas.");
+    }
+  };
+
+  const openTimer = () => {
+    setFocusDuration(String(profile?.focus_duration_minutes ?? 25));
+    setBreakDuration(String(profile?.break_duration_minutes ?? 5));
+    setTimerOpen(true);
+  };
+
+  const saveTimer = async () => {
+    try {
+      await updateProfile.mutateAsync({
+        focus_duration_minutes: Number(focusDuration),
+        break_duration_minutes: Number(breakDuration),
+      });
+      toast.success("Timer atualizado!");
+      setTimerOpen(false);
+    } catch {
+      toast.error("Erro ao salvar timer.");
+    }
+  };
+
   return (
     <div className="px-5 pt-12 pb-6 max-w-lg mx-auto">
       <h1 className="text-3xl font-bold tracking-tight text-foreground mb-6">Configurações</h1>
 
       <div className="rounded-2xl bg-card p-5 shadow-card mb-6 flex items-center gap-4">
         <div className="h-14 w-14 rounded-full bg-primary/10 flex items-center justify-center">
-          <User className="h-6 w-6 text-primary" />
+          {profile?.avatar_url ? (
+            <img src={profile.avatar_url} alt="" className="h-14 w-14 rounded-full object-cover" />
+          ) : (
+            <User className="h-6 w-6 text-primary" />
+          )}
         </div>
         <div>
-          <p className="font-semibold text-foreground">Usuário StudyFlow</p>
-          <p className="text-sm text-muted-foreground">usuario@exemplo.com</p>
+          <p className="font-semibold text-foreground">{profile?.full_name || "Usuário StudyFlow"}</p>
+          <p className="text-sm text-muted-foreground">{user?.email ?? ""}</p>
         </div>
       </div>
 
       <div className="rounded-2xl bg-card shadow-card mb-4 overflow-hidden">
+        <SettingItem icon={Target} label="Metas de Estudo" description="Diária, semanal, mensal" onClick={openGoals} />
+        <SettingItem icon={Timer} label="Timer Pomodoro" description={`${profile?.focus_duration_minutes ?? 25}min foco / ${profile?.break_duration_minutes ?? 5}min pausa`} onClick={openTimer} />
         <SettingItem icon={Bell} label="Notificações" description="Lembretes, alertas, resumos" />
-        <SettingItem icon={Calendar} label="Google Calendar" description="Conectar e sincronizar" />
         <SettingItem icon={Moon} label="Aparência" description="Tema e exibição" />
-        <SettingItem icon={Shield} label="Privacidade e Segurança" description="Proteção da conta" />
       </div>
 
       <div className="rounded-2xl bg-card shadow-card overflow-hidden">
-        <SettingItem icon={LogOut} label="Sair" danger />
+        <SettingItem icon={LogOut} label="Sair" danger onClick={handleLogout} />
       </div>
 
       <p className="text-center text-xs text-muted-foreground mt-8">StudyFlow v1.0.0</p>
+
+      {/* Goals Dialog */}
+      <Dialog open={goalsOpen} onOpenChange={setGoalsOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Metas de Estudo</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 mt-2">
+            <div>
+              <Label>Meta diária (horas)</Label>
+              <Input type="number" step="0.5" min="0.5" max="24" value={dailyGoal} onChange={(e) => setDailyGoal(e.target.value)} className="mt-1.5" />
+            </div>
+            <div>
+              <Label>Meta semanal (horas)</Label>
+              <Input type="number" step="1" min="1" max="168" value={weeklyGoal} onChange={(e) => setWeeklyGoal(e.target.value)} className="mt-1.5" />
+            </div>
+            <div>
+              <Label>Meta mensal (horas)</Label>
+              <Input type="number" step="1" min="1" max="744" value={monthlyGoal} onChange={(e) => setMonthlyGoal(e.target.value)} className="mt-1.5" />
+            </div>
+            <Button onClick={saveGoals} className="w-full" disabled={updateProfile.isPending}>Salvar</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Timer Dialog */}
+      <Dialog open={timerOpen} onOpenChange={setTimerOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Timer Pomodoro</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 mt-2">
+            <div>
+              <Label>Duração do foco (minutos)</Label>
+              <Input type="number" step="5" min="5" max="120" value={focusDuration} onChange={(e) => setFocusDuration(e.target.value)} className="mt-1.5" />
+            </div>
+            <div>
+              <Label>Duração do intervalo (minutos)</Label>
+              <Input type="number" step="1" min="1" max="30" value={breakDuration} onChange={(e) => setBreakDuration(e.target.value)} className="mt-1.5" />
+            </div>
+            <Button onClick={saveTimer} className="w-full" disabled={updateProfile.isPending}>Salvar</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
