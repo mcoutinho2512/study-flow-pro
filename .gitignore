@@ -26,3 +26,8 @@ dist-ssr
 # Capacitor native platforms
 ios
 android
+
+# Environment variables
+.env
+.env.local
+.env.*.local

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,6 +7,12 @@ import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const MIN_PASSWORD_LENGTH = 8;
+const MAX_LOGIN_ATTEMPTS = 5;
+const LOCKOUT_DURATION_MS = 10 * 60 * 1000; // 10 minutes
+const ATTEMPT_COOLDOWN_MS = 2000; // 2 seconds between attempts
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
@@ -17,34 +23,78 @@ export default function Auth() {
   const { signInWithEmail, signUpWithEmail, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
 
+  const loginAttempts = useRef(0);
+  const lastAttemptTime = useRef(0);
+  const lockoutUntil = useRef(0);
+
+  const checkRateLimit = (): boolean => {
+    const now = Date.now();
+    if (now < lockoutUntil.current) {
+      const minutesLeft = Math.ceil((lockoutUntil.current - now) / 60000);
+      toast.error(`Conta bloqueada. Tente novamente em ${minutesLeft} minuto(s).`);
+      return false;
+    }
+    if (now - lastAttemptTime.current < ATTEMPT_COOLDOWN_MS) {
+      toast.error("Aguarde antes de tentar novamente.");
+      return false;
+    }
+    return true;
+  };
+
+  const recordAttempt = (success: boolean) => {
+    lastAttemptTime.current = Date.now();
+    if (success) {
+      loginAttempts.current = 0;
+    } else {
+      loginAttempts.current++;
+      if (loginAttempts.current >= MAX_LOGIN_ATTEMPTS) {
+        lockoutUntil.current = Date.now() + LOCKOUT_DURATION_MS;
+        loginAttempts.current = 0;
+        toast.error("Muitas tentativas. Conta bloqueada por 10 minutos.");
+      }
+    }
+  };
+
+  const validateInputs = (): boolean => {
+    const trimmedEmail = email.trim();
+    if (!trimmedEmail || !EMAIL_REGEX.test(trimmedEmail)) {
+      toast.error("Informe um e-mail válido.");
+      return false;
+    }
+    if (password.length < MIN_PASSWORD_LENGTH) {
+      toast.error(`A senha deve ter no mínimo ${MIN_PASSWORD_LENGTH} caracteres.`);
+      return false;
+    }
+    if (!isLogin && !fullName.trim()) {
+      toast.error("Preencha seu nome.");
+      return false;
+    }
+    if (!isLogin && fullName.trim().length > 100) {
+      toast.error("Nome muito longo (máximo 100 caracteres).");
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim() || !password.trim()) {
-      toast.error("Preencha todos os campos.");
-      return;
-    }
-    if (password.length < 6) {
-      toast.error("A senha deve ter no mínimo 6 caracteres.");
-      return;
-    }
+    if (!validateInputs()) return;
+    if (!checkRateLimit()) return;
 
     setLoading(true);
     if (isLogin) {
       const { error } = await signInWithEmail(email, password);
+      recordAttempt(!error);
       if (error) {
-        toast.error("E-mail ou senha incorretos.");
+        toast.error(error);
       } else {
         navigate("/");
       }
     } else {
-      if (!fullName.trim()) {
-        toast.error("Preencha seu nome.");
-        setLoading(false);
-        return;
-      }
       const { error } = await signUpWithEmail(email, password, fullName);
+      recordAttempt(!error);
       if (error) {
-        toast.error(error.message);
+        toast.error(error);
       } else {
         toast.success("Conta criada! Verifique seu e-mail para confirmar.");
       }
@@ -53,10 +103,11 @@ export default function Auth() {
   };
 
   const handleGoogle = async () => {
+    if (!checkRateLimit()) return;
     setLoading(true);
     const { error } = await signInWithGoogle();
     if (error) {
-      toast.error("Erro ao entrar com Google.");
+      toast.error(error);
       setLoading(false);
     }
   };
@@ -88,6 +139,8 @@ export default function Auth() {
                 onChange={(e) => setFullName(e.target.value)}
                 className="mt-1.5 h-11"
                 disabled={loading}
+                maxLength={100}
+                autoComplete="name"
               />
             </div>
           )}
@@ -100,6 +153,7 @@ export default function Auth() {
               onChange={(e) => setEmail(e.target.value)}
               className="mt-1.5 h-11"
               disabled={loading}
+              autoComplete="email"
             />
           </div>
           <div>
@@ -111,6 +165,8 @@ export default function Auth() {
               onChange={(e) => setPassword(e.target.value)}
               className="mt-1.5 h-11"
               disabled={loading}
+              minLength={MIN_PASSWORD_LENGTH}
+              autoComplete={isLogin ? "current-password" : "new-password"}
             />
           </div>
 

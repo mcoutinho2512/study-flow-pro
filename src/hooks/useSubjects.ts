@@ -5,6 +5,25 @@ import type { Tables } from "@/integrations/supabase/types";
 
 type Subject = Tables<"subjects">;
 
+const ALLOWED_COLORS = ["indigo", "emerald", "amber", "sky", "rose", "violet"] as const;
+const MAX_SUBJECT_NAME_LENGTH = 50;
+
+function validateSubjectName(name: string): string {
+  const trimmed = name.trim();
+  if (!trimmed) throw new Error("Nome da matéria não pode estar vazio.");
+  if (trimmed.length > MAX_SUBJECT_NAME_LENGTH) {
+    throw new Error(`Nome não pode ter mais de ${MAX_SUBJECT_NAME_LENGTH} caracteres.`);
+  }
+  return trimmed;
+}
+
+function validateColor(color: string): string {
+  if (!ALLOWED_COLORS.includes(color as typeof ALLOWED_COLORS[number])) {
+    throw new Error("Cor inválida.");
+  }
+  return color;
+}
+
 export function useSubjects() {
   const { user } = useAuth();
 
@@ -32,9 +51,12 @@ export function useCreateSubject() {
   return useMutation({
     mutationFn: async ({ name, color }: { name: string; color: string }) => {
       if (!user) throw new Error("Not authenticated");
+      const validName = validateSubjectName(name);
+      const validColor = validateColor(color);
+
       const { data, error } = await supabase
         .from("subjects")
-        .insert({ user_id: user.id, name, color })
+        .insert({ user_id: user.id, name: validName, color: validColor })
         .select()
         .single();
       if (error) throw error;
@@ -51,9 +73,12 @@ export function useUpdateSubject() {
 
   return useMutation({
     mutationFn: async ({ id, name, color }: { id: string; name?: string; color?: string }) => {
-      const updates: Record<string, string> = {};
-      if (name !== undefined) updates.name = name;
-      if (color !== undefined) updates.color = color;
+      const updates: Partial<{ name: string; color: string }> = {};
+      if (name !== undefined) updates.name = validateSubjectName(name);
+      if (color !== undefined) updates.color = validateColor(color);
+
+      if (Object.keys(updates).length === 0) throw new Error("Nenhuma alteração informada.");
+
       const { data, error } = await supabase
         .from("subjects")
         .update(updates)
@@ -74,6 +99,7 @@ export function useDeleteSubject() {
 
   return useMutation({
     mutationFn: async (id: string) => {
+      if (!id) throw new Error("ID inválido.");
       const { error } = await supabase
         .from("subjects")
         .update({ is_archived: true })

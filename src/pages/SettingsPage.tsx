@@ -1,4 +1,4 @@
-import { Bell, Calendar, Moon, Shield, LogOut, ChevronRight, User, Target, Timer } from "lucide-react";
+import { Bell, Moon, LogOut, ChevronRight, User, Target, Timer } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
@@ -47,6 +47,14 @@ function SettingItem({ icon: Icon, label, description, onClick, danger }: Settin
   );
 }
 
+function validateNumber(value: string, min: number, max: number, label: string): number {
+  const num = Number(value);
+  if (isNaN(num) || num < min || num > max) {
+    throw new Error(`${label} deve estar entre ${min} e ${max}.`);
+  }
+  return num;
+}
+
 export default function SettingsPage() {
   const { user, signOut } = useAuth();
   const { data: profile } = useProfile();
@@ -75,15 +83,19 @@ export default function SettingsPage() {
 
   const saveGoals = async () => {
     try {
+      const daily = validateNumber(dailyGoal, 0.5, 24, "Meta diária");
+      const weekly = validateNumber(weeklyGoal, 1, 168, "Meta semanal");
+      const monthly = validateNumber(monthlyGoal, 1, 744, "Meta mensal");
+
       await updateProfile.mutateAsync({
-        daily_goal_hours: Number(dailyGoal),
-        weekly_goal_hours: Number(weeklyGoal),
-        monthly_goal_hours: Number(monthlyGoal),
+        daily_goal_hours: daily,
+        weekly_goal_hours: weekly,
+        monthly_goal_hours: monthly,
       });
       toast.success("Metas atualizadas!");
       setGoalsOpen(false);
-    } catch {
-      toast.error("Erro ao salvar metas.");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Erro ao salvar metas.");
     }
   };
 
@@ -95,14 +107,17 @@ export default function SettingsPage() {
 
   const saveTimer = async () => {
     try {
+      const focus = validateNumber(focusDuration, 5, 120, "Duração do foco");
+      const breakMin = validateNumber(breakDuration, 1, 30, "Duração do intervalo");
+
       await updateProfile.mutateAsync({
-        focus_duration_minutes: Number(focusDuration),
-        break_duration_minutes: Number(breakDuration),
+        focus_duration_minutes: focus,
+        break_duration_minutes: breakMin,
       });
       toast.success("Timer atualizado!");
       setTimerOpen(false);
-    } catch {
-      toast.error("Erro ao salvar timer.");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Erro ao salvar timer.");
     }
   };
 
@@ -111,9 +126,14 @@ export default function SettingsPage() {
       <h1 className="text-3xl font-bold tracking-tight text-foreground mb-6">Configurações</h1>
 
       <div className="rounded-2xl bg-card p-5 shadow-card mb-6 flex items-center gap-4">
-        <div className="h-14 w-14 rounded-full bg-primary/10 flex items-center justify-center">
+        <div className="h-14 w-14 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden">
           {profile?.avatar_url ? (
-            <img src={profile.avatar_url} alt="" className="h-14 w-14 rounded-full object-cover" />
+            <img
+              src={profile.avatar_url}
+              alt=""
+              className="h-14 w-14 rounded-full object-cover"
+              referrerPolicy="no-referrer"
+            />
           ) : (
             <User className="h-6 w-6 text-primary" />
           )}
@@ -137,7 +157,6 @@ export default function SettingsPage() {
 
       <p className="text-center text-xs text-muted-foreground mt-8">StudyFlow v1.0.0</p>
 
-      {/* Goals Dialog */}
       <Dialog open={goalsOpen} onOpenChange={setGoalsOpen}>
         <DialogContent>
           <DialogHeader>
@@ -161,7 +180,6 @@ export default function SettingsPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Timer Dialog */}
       <Dialog open={timerOpen} onOpenChange={setTimerOpen}>
         <DialogContent>
           <DialogHeader>

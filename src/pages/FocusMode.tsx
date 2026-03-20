@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Pause, Play, RotateCcw, Check, ChevronDown } from "lucide-react";
+import { Pause, Play, RotateCcw, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSubjects } from "@/hooks/useSubjects";
 import { useProfile } from "@/hooks/useProfile";
@@ -15,6 +15,20 @@ import {
 } from "@/components/ui/select";
 
 type Phase = "focus" | "break";
+const MAX_RETRIES = 3;
+const RETRY_DELAY_MS = 500;
+
+async function withRetry<T>(fn: () => Promise<T>, retries = MAX_RETRIES): Promise<T> {
+  for (let i = 0; i < retries; i++) {
+    try {
+      return await fn();
+    } catch (error) {
+      if (i === retries - 1) throw error;
+      await new Promise((r) => setTimeout(r, RETRY_DELAY_MS * (i + 1)));
+    }
+  }
+  throw new Error("Max retries exceeded");
+}
 
 export default function FocusMode() {
   const { data: subjects = [] } = useSubjects();
@@ -32,17 +46,17 @@ export default function FocusMode() {
   const [sessionsCompleted, setSessions] = useState(0);
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
   const startedAtRef = useRef<Date | null>(null);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const timerStartRef = useRef<number | null>(null);
+  const timerSecondsAtStart = useRef<number>(0);
+  const rafRef = useRef<number | null>(null);
 
   const totalSeconds = phase === "focus" ? focusDuration : breakDuration;
   const progress = ((totalSeconds - seconds) / totalSeconds) * 100;
 
-  // Update seconds when profile loads
   useEffect(() => {
-    if (!isActive && phase === "focus") setSeconds(focusDuration);
+    if (!isActive && phase === "focus" && !currentSessionId) setSeconds(focusDuration);
   }, [focusDuration]);
 
-  // Set first subject as default
   useEffect(() => {
     if (subjects.length > 0 && !selectedSubjectId) {
       setSelectedSubjectId(subjects[0].id);
@@ -54,57 +68,98 @@ export default function FocusMode() {
   const saveSession = useCallback(async () => {
     if (!currentSessionId || !startedAtRef.current) return;
     const now = new Date();
-    const durationSecs = Math.round((now.getTime() - startedAtRef.current.getTime()) / 1000);
+    const durationSecs = Math.max(0, Math.round((now.getTime() - startedAtRef.current.getTime()) / 1000));
+
     try {
-      await updateSession.mutateAsync({
-        id: currentSessionId,
-        ended_at: now.toISOString(),
-        duration_seconds: durationSecs,
-      });
+      await withRetry(() =>
+        updateSession.mutateAsync({
+          id: currentSessionId,
+          ended_at: now.toISOString(),
+          duration_seconds: durationSecs,
+        })
+      );
     } catch {
-      toast.error("Erro ao salvar sessão.");
+      toast.error("Falha ao salvar sessão. Verifique sua conexão.");
     }
     setCurrentSessionId(null);
     startedAtRef.current = null;
   }, [currentSessionId, updateSession]);
 
-  const tick = useCallback(() => {
-    setSeconds((s) => {
-      if (s <= 1) {
+  // Accurate timer using requestAnimationFrame + Date.now
+  useEffect(() => {
+    if (!isActive) {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      timerStartRef.current = null;
+      return;
+    }
+
+    timerStartRef.current = Date.now();
+    timerSecondsAtStart.current = seconds;
+
+    const tick = () => {
+      if (!timerStartRef.current) return;
+      const elapsed = Math.floor((Date.now() - timerStartRef.current) / 1000);
+      const newSeconds = Math.max(0, timerSecondsAtStart.current - elapsed);
+
+      setSeconds(newSeconds);
+
+      if (newSeconds <= 0) {
         setIsActive(false);
         if (phase === "focus") {
           setSessions((c) => c + 1);
           saveSession();
           setPhase("break");
-          return breakDuration;
+          setSeconds(breakDuration);
         } else {
           setPhase("focus");
-          return focusDuration;
+          setSeconds(focusDuration);
+        }
+        return;
+      }
+
+      rafRef.current = requestAnimationFrame(tick);
+    };
+
+    rafRef.current = requestAnimationFrame(tick);
+
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [isActive, phase, breakDuration, focusDuration, saveSession]);
+
+  // Recalculate on app resume (mobile background)
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible" && isActive && timerStartRef.current) {
+        const elapsed = Math.floor((Date.now() - timerStartRef.current) / 1000);
+        const newSeconds = Math.max(0, timerSecondsAtStart.current - elapsed);
+        setSeconds(newSeconds);
+        if (newSeconds <= 0) {
+          setIsActive(false);
+          if (phase === "focus") {
+            setSessions((c) => c + 1);
+            saveSession();
+            toast.success("Sessão completada!");
+          }
+          setPhase(phase === "focus" ? "break" : "focus");
+          setSeconds(phase === "focus" ? breakDuration : focusDuration);
         }
       }
-      return s - 1;
-    });
-  }, [phase, breakDuration, focusDuration, saveSession]);
-
-  useEffect(() => {
-    if (isActive) {
-      intervalRef.current = setInterval(tick, 1000);
-    }
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [isActive, tick]);
+
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
+  }, [isActive, phase, breakDuration, focusDuration, saveSession]);
 
   const handlePlayPause = async () => {
     if (!isActive) {
-      // Starting
       if (phase === "focus" && !currentSessionId && selectedSubjectId) {
         try {
           const session = await createSession.mutateAsync({ subject_id: selectedSubjectId });
           setCurrentSessionId(session.id);
           startedAtRef.current = new Date();
         } catch {
-          toast.error("Erro ao iniciar sessão.");
+          toast.error("Erro ao iniciar sessão. Verifique sua conexão.");
           return;
         }
       }
@@ -175,14 +230,14 @@ export default function FocusMode() {
               cx={160} cy={160} r={radius} fill="none"
               stroke={phase === "focus" ? "hsl(243, 75%, 59%)" : "hsl(142, 71%, 45%)"}
               strokeWidth={4} strokeDasharray={circumference} strokeDashoffset={offset}
-              strokeLinecap="round" className="transition-all duration-1000 ease-linear"
+              strokeLinecap="round" className="transition-all duration-300 ease-linear"
             />
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <AnimatePresence mode="wait">
               <motion.span
-                key={seconds}
-                initial={{ opacity: 0.5 }}
+                key={Math.floor(seconds / 60)}
+                initial={{ opacity: 0.8 }}
                 animate={{ opacity: 1 }}
                 className="text-7xl font-light tracking-tighter tabular-nums text-background"
               >
@@ -193,7 +248,7 @@ export default function FocusMode() {
         </div>
 
         <p className="text-muted-foreground tracking-widest uppercase text-xs mb-12">
-          {isActive ? (selectedSubject?.name ?? "Matéria") : (selectedSubject?.name ?? "Selecione uma matéria")}
+          {selectedSubject?.name ?? "Selecione uma matéria"}
         </p>
 
         <div className="flex items-center gap-4">
