@@ -1,6 +1,8 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import type { User, Session, AuthError } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { Capacitor } from "@capacitor/core";
+import { App } from "@capacitor/app";
 
 interface AuthContextType {
   user: User | null;
@@ -60,6 +62,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     });
 
+    // Capacitor: escuta deep links para OAuth callback
+    if (Capacitor.isNativePlatform()) {
+      App.addListener('appUrlOpen', async ({ url }) => {
+        if (url.includes('access_token') || url.includes('code=') || url.includes('login')) {
+          // Extrai tokens do fragmento da URL
+          const hashPart = url.split('#')[1];
+          if (hashPart) {
+            const params = new URLSearchParams(hashPart);
+            const accessToken = params.get('access_token');
+            const refreshToken = params.get('refresh_token');
+            if (accessToken && refreshToken) {
+              await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
+            }
+          }
+        }
+      });
+    }
+
     return () => {
       mounted = false;
       subscription.unsubscribe();
@@ -81,11 +101,49 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signInWithGoogle = async (): Promise<{ error: string | null }> => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo: window.location.origin },
-    });
-    return { error: error ? "Erro ao conectar com Google. Tente novamente." : null };
+    try {
+      const isNative = Capacitor.isNativePlatform();
+      const redirectTo = isNative
+        ? 'com.studyflow.app://login'
+        : window.location.origin;
+
+      if (isNative) {
+        // No mobile: gera a URL e abre no Safari do sistema
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: "google",
+          options: {
+            redirectTo,
+            skipBrowserRedirect: true,
+          },
+        });
+
+        if (error) {
+          console.error('[Auth] Google OAuth error:', error.message);
+          return { error: "Erro ao conectar com Google. Tente novamente." };
+        }
+
+        if (data?.url) {
+          // Abre no Safari nativo do sistema
+          window.open(data.url, '_system');
+        }
+      } else {
+        // Na web: fluxo normal de redirect
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: "google",
+          options: { redirectTo },
+        });
+
+        if (error) {
+          console.error('[Auth] Google OAuth error:', error.message);
+          return { error: "Erro ao conectar com Google. Tente novamente." };
+        }
+      }
+
+      return { error: null };
+    } catch (err) {
+      console.error('[Auth] Google OAuth catch:', err);
+      return { error: "Erro ao conectar com Google. Tente novamente." };
+    }
   };
 
   const signOut = async () => {

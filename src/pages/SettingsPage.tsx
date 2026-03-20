@@ -1,10 +1,10 @@
-import { Bell, Moon, LogOut, ChevronRight, User, Target, Timer } from "lucide-react";
+import { Bell, Moon, LogOut, ChevronRight, User, Target, Timer, Sun, Monitor } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -14,6 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 
 interface SettingItemProps {
   icon: React.ElementType;
@@ -55,6 +56,23 @@ function validateNumber(value: string, min: number, max: number, label: string):
   return num;
 }
 
+type ThemeMode = "light" | "dark" | "system";
+
+function getStoredTheme(): ThemeMode {
+  return (localStorage.getItem("studyflow-theme") as ThemeMode) || "system";
+}
+
+function applyTheme(mode: ThemeMode) {
+  const root = document.documentElement;
+  if (mode === "system") {
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    root.classList.toggle("dark", prefersDark);
+  } else {
+    root.classList.toggle("dark", mode === "dark");
+  }
+  localStorage.setItem("studyflow-theme", mode);
+}
+
 export default function SettingsPage() {
   const { user, signOut } = useAuth();
   const { data: profile } = useProfile();
@@ -62,12 +80,26 @@ export default function SettingsPage() {
   const navigate = useNavigate();
   const [goalsOpen, setGoalsOpen] = useState(false);
   const [timerOpen, setTimerOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const [themeOpen, setThemeOpen] = useState(false);
 
   const [dailyGoal, setDailyGoal] = useState("");
   const [weeklyGoal, setWeeklyGoal] = useState("");
   const [monthlyGoal, setMonthlyGoal] = useState("");
   const [focusDuration, setFocusDuration] = useState("");
   const [breakDuration, setBreakDuration] = useState("");
+
+  // Notificações
+  const [notifStudyReminder, setNotifStudyReminder] = useState(() => localStorage.getItem("notif-study-reminder") !== "false");
+  const [notifSessionEnd, setNotifSessionEnd] = useState(() => localStorage.getItem("notif-session-end") !== "false");
+  const [notifWeeklyReport, setNotifWeeklyReport] = useState(() => localStorage.getItem("notif-weekly-report") !== "false");
+
+  // Tema
+  const [themeMode, setThemeMode] = useState<ThemeMode>(getStoredTheme);
+
+  useEffect(() => {
+    applyTheme(themeMode);
+  }, [themeMode]);
 
   const handleLogout = async () => {
     await signOut();
@@ -121,6 +153,12 @@ export default function SettingsPage() {
     }
   };
 
+  const saveNotifSetting = (key: string, value: boolean) => {
+    localStorage.setItem(key, String(value));
+  };
+
+  const themeLabel = themeMode === "light" ? "Claro" : themeMode === "dark" ? "Escuro" : "Automático";
+
   return (
     <div className="px-5 pt-12 pb-6 max-w-lg mx-auto">
       <h1 className="text-3xl font-bold tracking-tight text-foreground mb-6">Configurações</h1>
@@ -147,8 +185,8 @@ export default function SettingsPage() {
       <div className="rounded-2xl bg-card shadow-card mb-4 overflow-hidden">
         <SettingItem icon={Target} label="Metas de Estudo" description="Diária, semanal, mensal" onClick={openGoals} />
         <SettingItem icon={Timer} label="Timer Pomodoro" description={`${profile?.focus_duration_minutes ?? 25}min foco / ${profile?.break_duration_minutes ?? 5}min pausa`} onClick={openTimer} />
-        <SettingItem icon={Bell} label="Notificações" description="Lembretes, alertas, resumos" />
-        <SettingItem icon={Moon} label="Aparência" description="Tema e exibição" />
+        <SettingItem icon={Bell} label="Notificações" description="Lembretes, alertas, resumos" onClick={() => setNotifOpen(true)} />
+        <SettingItem icon={Moon} label="Aparência" description={`Tema: ${themeLabel}`} onClick={() => setThemeOpen(true)} />
       </div>
 
       <div className="rounded-2xl bg-card shadow-card overflow-hidden">
@@ -157,6 +195,7 @@ export default function SettingsPage() {
 
       <p className="text-center text-xs text-muted-foreground mt-8">StudyFlow v1.0.0</p>
 
+      {/* Dialog Metas */}
       <Dialog open={goalsOpen} onOpenChange={setGoalsOpen}>
         <DialogContent>
           <DialogHeader>
@@ -180,6 +219,7 @@ export default function SettingsPage() {
         </DialogContent>
       </Dialog>
 
+      {/* Dialog Timer */}
       <Dialog open={timerOpen} onOpenChange={setTimerOpen}>
         <DialogContent>
           <DialogHeader>
@@ -195,6 +235,82 @@ export default function SettingsPage() {
               <Input type="number" step="1" min="1" max="30" value={breakDuration} onChange={(e) => setBreakDuration(e.target.value)} className="mt-1.5" />
             </div>
             <Button onClick={saveTimer} className="w-full" disabled={updateProfile.isPending}>Salvar</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog Notificações */}
+      <Dialog open={notifOpen} onOpenChange={setNotifOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Notificações</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-5 mt-2">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium">Lembrete de estudo</p>
+                <p className="text-xs text-muted-foreground">Notificar para estudar diariamente</p>
+              </div>
+              <Switch
+                checked={notifStudyReminder}
+                onCheckedChange={(v) => { setNotifStudyReminder(v); saveNotifSetting("notif-study-reminder", v); }}
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium">Fim da sessão</p>
+                <p className="text-xs text-muted-foreground">Alerta quando o timer finalizar</p>
+              </div>
+              <Switch
+                checked={notifSessionEnd}
+                onCheckedChange={(v) => { setNotifSessionEnd(v); saveNotifSetting("notif-session-end", v); }}
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium">Resumo semanal</p>
+                <p className="text-xs text-muted-foreground">Relatório das suas horas de estudo</p>
+              </div>
+              <Switch
+                checked={notifWeeklyReport}
+                onCheckedChange={(v) => { setNotifWeeklyReport(v); saveNotifSetting("notif-weekly-report", v); }}
+              />
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog Aparência */}
+      <Dialog open={themeOpen} onOpenChange={setThemeOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Aparência</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3 mt-2">
+            {([
+              { mode: "light" as ThemeMode, label: "Claro", icon: Sun, desc: "Tema claro" },
+              { mode: "dark" as ThemeMode, label: "Escuro", icon: Moon, desc: "Tema escuro" },
+              { mode: "system" as ThemeMode, label: "Automático", icon: Monitor, desc: "Segue o sistema" },
+            ]).map(({ mode, label, icon: ThemeIcon, desc }) => (
+              <button
+                key={mode}
+                onClick={() => { setThemeMode(mode); setThemeOpen(false); toast.success(`Tema: ${label}`); }}
+                className={cn(
+                  "w-full flex items-center gap-3 p-4 rounded-xl border transition-all",
+                  themeMode === mode
+                    ? "border-primary bg-primary/5"
+                    : "border-transparent hover:bg-secondary"
+                )}
+              >
+                <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <ThemeIcon className="h-4.5 w-4.5 text-primary" />
+                </div>
+                <div className="text-left">
+                  <p className="text-sm font-medium">{label}</p>
+                  <p className="text-xs text-muted-foreground">{desc}</p>
+                </div>
+              </button>
+            ))}
           </div>
         </DialogContent>
       </Dialog>
