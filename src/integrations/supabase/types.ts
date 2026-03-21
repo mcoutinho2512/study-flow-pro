@@ -134,6 +134,72 @@ export type Database = {
           }
         ]
       }
+      planner_blocks: {
+        Row: {
+          id: string
+          user_id: string
+          subject_id: string | null
+          title: string
+          day_of_week: number
+          start_time: string
+          end_time: string
+          duration_minutes: number
+          color: string
+          session_type: string
+          notes: string | null
+          status: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          subject_id?: string | null
+          title: string
+          day_of_week: number
+          start_time: string
+          end_time: string
+          duration_minutes: number
+          color?: string
+          session_type?: string
+          notes?: string | null
+          status?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          subject_id?: string | null
+          title?: string
+          day_of_week?: number
+          start_time?: string
+          end_time?: string
+          duration_minutes?: number
+          color?: string
+          session_type?: string
+          notes?: string | null
+          status?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "planner_blocks_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "planner_blocks_subject_id_fkey"
+            columns: ["subject_id"]
+            isOneToOne: false
+            referencedRelation: "subjects"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       study_sessions: {
         Row: {
           id: string

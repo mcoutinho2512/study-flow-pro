@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -7,11 +8,14 @@ import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import AppLayout from "@/components/layout/AppLayout";
+import { Capacitor } from "@capacitor/core";
+import { StatusBar, Style } from "@capacitor/status-bar";
 import Dashboard from "@/pages/Dashboard";
 import Subjects from "@/pages/Subjects";
 import FocusMode from "@/pages/FocusMode";
 import Analytics from "@/pages/Analytics";
 import SettingsPage from "@/pages/SettingsPage";
+import WeeklyPlanner from "@/pages/WeeklyPlanner";
 import Auth from "@/pages/Auth";
 import NotFound from "@/pages/NotFound";
 
@@ -33,7 +37,15 @@ function AuthRedirect() {
   return <Auth />;
 }
 
-const App = () => (
+const App = () => {
+  useEffect(() => {
+    if (Capacitor.isNativePlatform()) {
+      StatusBar.setStyle({ style: Style.Light });
+      StatusBar.setOverlaysWebView({ overlay: true });
+    }
+  }, []);
+
+  return (
   <ErrorBoundary>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
@@ -47,6 +59,7 @@ const App = () => (
                 <Route element={<AppLayout />}>
                   <Route path="/" element={<Dashboard />} />
                   <Route path="/subjects" element={<Subjects />} />
+                  <Route path="/planner" element={<WeeklyPlanner />} />
                   <Route path="/focus" element={<FocusMode />} />
                   <Route path="/analytics" element={<Analytics />} />
                   <Route path="/settings" element={<SettingsPage />} />
@@ -60,5 +73,7 @@ const App = () => (
     </QueryClientProvider>
   </ErrorBoundary>
 );
+
+};
 
 export default App;

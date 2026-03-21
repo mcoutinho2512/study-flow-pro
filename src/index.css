@@ -4,9 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
-  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-}
+/* Safe areas são tratadas nos componentes de layout, não no html */
 
 @layer base {
   :root {
