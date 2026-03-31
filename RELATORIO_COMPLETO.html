@@ -1,0 +1,1763 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="MC Tech Consultoria e Servicos" />
+  <title>StudyFlow - Relatorio Tecnico Completo</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="data:text/css;charset=utf-8,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:900px;margin:0 auto;padding:40px;line-height:1.7;color:%231a1a2e}h1{color:%236C63FF;border-bottom:3px solid %236C63FF;padding-bottom:8px;margin-top:40px}h2{color:%235A52D5;margin-top:30px}h3{color:%23444}table{width:100%25;border-collapse:collapse;margin:16px 0}th,td{border:1px solid %23ddd;padding:10px 12px;text-align:left;font-size:14px}th{background:%236C63FF;color:white;font-weight:600}tr:nth-child(even){background:%23f8f8fc}code,pre{background:%23f4f4f8;padding:2px 6px;border-radius:4px;font-size:13px}pre{padding:16px;overflow-x:auto}blockquote{border-left:4px solid %236C63FF;padding-left:16px;color:%23666}@media print{body{font-size:11pt}h1{page-break-before:always}table{font-size:10pt}}" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">StudyFlow - Relatorio Tecnico Completo</h1>
+<p class="subtitle">Base de Conhecimento para Manutencao e Evolucao</p>
+<p class="author">MC Tech Consultoria e Servicos</p>
+<p class="date">Marco 2026</p>
+</header>
+<h1 id="studyflow---relatorio-tecnico-completo">STUDYFLOW - RELATORIO
+TECNICO COMPLETO</h1>
+<p><strong>Versao:</strong> 1.0.0 <strong>Data:</strong> Marco de 2026
+<strong>Empresa:</strong> MC Tech Consultoria e Servicos
+<strong>Desenvolvedor:</strong> Magnun Coutinho <strong>Status:</strong>
+Em revisao na Apple App Store</p>
+<hr />
+<h1 id="visao-geral-do-projeto">1. VISAO GERAL DO PROJETO</h1>
+<p>O <strong>StudyFlow</strong> e um aplicativo multiplataforma de
+planejamento e acompanhamento de estudos. Foi projetado para estudantes
+de concursos, vestibulares, faculdade e certificacoes que precisam
+organizar sua rotina de estudos com disciplina e foco.</p>
+<p>O app combina as funcionalidades de planner semanal, timer Pomodoro,
+gerenciamento de materias, anotacoes e relatorios de progresso em uma
+unica interface moderna e intuitiva.</p>
+<h2 id="funcionalidades-principais">1.1 Funcionalidades Principais</h2>
+<table>
+<thead>
+<tr>
+<th>Funcionalidade</th>
+<th>Descricao</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dashboard</td>
+<td>Visao geral do dia com sessoes, streak e progresso</td>
+</tr>
+<tr>
+<td>Planner Semanal</td>
+<td>Grade visual seg-dom com blocos de estudo</td>
+</tr>
+<tr>
+<td>Modo Foco (Pomodoro)</td>
+<td>Timer configuravel com registro automatico</td>
+</tr>
+<tr>
+<td>Materias</td>
+<td>Cadastro com cores e estatisticas por disciplina</td>
+</tr>
+<tr>
+<td>Anotacoes</td>
+<td>Topicos de atencao vinculados a cada materia</td>
+</tr>
+<tr>
+<td>Relatorios</td>
+<td>Graficos de horas, distribuicao e metas</td>
+</tr>
+<tr>
+<td>Configuracoes</td>
+<td>Metas, timer, tema e notificacoes</td>
+</tr>
+</tbody>
+</table>
+<h2 id="plataformas">1.2 Plataformas</h2>
+<ul>
+<li><strong>Web:</strong> Navegadores modernos (Chrome, Safari,
+Firefox)</li>
+<li><strong>iOS:</strong> iPhone (via Capacitor)</li>
+<li><strong>Android:</strong> Smartphones Android (via Capacitor)</li>
+<li><strong>PWA:</strong> Progressive Web App com manifest</li>
+</ul>
+<hr />
+<h1 id="stack-tecnologica">2. STACK TECNOLOGICA</h1>
+<h2 id="frontend">2.1 Frontend</h2>
+<table>
+<thead>
+<tr>
+<th>Tecnologia</th>
+<th>Versao</th>
+<th>Funcao</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>React</td>
+<td>18.3.1</td>
+<td>Framework de UI</td>
+</tr>
+<tr>
+<td>TypeScript</td>
+<td>5.8.3</td>
+<td>Tipagem estatica</td>
+</tr>
+<tr>
+<td>Vite</td>
+<td>8.0.0</td>
+<td>Build tool e dev server</td>
+</tr>
+<tr>
+<td>React Router</td>
+<td>6.30.1</td>
+<td>Roteamento SPA</td>
+</tr>
+<tr>
+<td>TanStack React Query</td>
+<td>5.83.0</td>
+<td>Cache e estado do servidor</td>
+</tr>
+<tr>
+<td>Tailwind CSS</td>
+<td>3.4.17</td>
+<td>Estilizacao utility-first</td>
+</tr>
+<tr>
+<td>Framer Motion</td>
+<td>12.38.0</td>
+<td>Animacoes</td>
+</tr>
+<tr>
+<td>Recharts</td>
+<td>2.15.4</td>
+<td>Graficos e charts</td>
+</tr>
+<tr>
+<td>Lucide React</td>
+<td>0.462.0</td>
+<td>Icones</td>
+</tr>
+<tr>
+<td>Sonner</td>
+<td>1.7.4</td>
+<td>Notificacoes toast</td>
+</tr>
+<tr>
+<td>date-fns</td>
+<td>3.6.0</td>
+<td>Manipulacao de datas</td>
+</tr>
+</tbody>
+</table>
+<h2 id="backend-e-banco-de-dados">2.2 Backend e Banco de Dados</h2>
+<table>
+<thead>
+<tr>
+<th>Tecnologia</th>
+<th>Versao</th>
+<th>Funcao</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Supabase</td>
+<td>2.99.2</td>
+<td>BaaS (Backend as a Service)</td>
+</tr>
+<tr>
+<td>PostgreSQL</td>
+<td>14.x</td>
+<td>Banco de dados (via Supabase)</td>
+</tr>
+<tr>
+<td>Row Level Security</td>
+<td>-</td>
+<td>Isolamento de dados por usuario</td>
+</tr>
+</tbody>
+</table>
+<h2 id="mobile">2.3 Mobile</h2>
+<table>
+<thead>
+<tr>
+<th>Tecnologia</th>
+<th>Versao</th>
+<th>Funcao</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Capacitor Core</td>
+<td>8.2.0</td>
+<td>Bridge nativo</td>
+</tr>
+<tr>
+<td>Capacitor iOS</td>
+<td>8.2.0</td>
+<td>Build iOS</td>
+</tr>
+<tr>
+<td>Capacitor Android</td>
+<td>8.2.0</td>
+<td>Build Android</td>
+</tr>
+<tr>
+<td><span class="citation"
+data-cites="capacitor/app">@capacitor/app</span></td>
+<td>8.0.1</td>
+<td>Deep links</td>
+</tr>
+<tr>
+<td><span class="citation"
+data-cites="capacitor/browser">@capacitor/browser</span></td>
+<td>8.0.2</td>
+<td>Browser externo</td>
+</tr>
+<tr>
+<td><span class="citation"
+data-cites="capacitor/splash-screen">@capacitor/splash-screen</span></td>
+<td>8.0.1</td>
+<td>Tela de abertura</td>
+</tr>
+<tr>
+<td><span class="citation"
+data-cites="capacitor/status-bar">@capacitor/status-bar</span></td>
+<td>8.0.1</td>
+<td>Barra de status</td>
+</tr>
+<tr>
+<td><span class="citation"
+data-cites="capacitor/keyboard">@capacitor/keyboard</span></td>
+<td>8.0.1</td>
+<td>Teclado nativo</td>
+</tr>
+<tr>
+<td><span class="citation"
+data-cites="capacitor/haptics">@capacitor/haptics</span></td>
+<td>8.0.1</td>
+<td>Feedback tatil</td>
+</tr>
+</tbody>
+</table>
+<h2 id="ui-components">2.4 UI Components</h2>
+<table>
+<thead>
+<tr>
+<th>Tecnologia</th>
+<th>Funcao</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>shadcn/ui</td>
+<td>Biblioteca de componentes</td>
+</tr>
+<tr>
+<td>Radix UI</td>
+<td>Primitivos acessiveis</td>
+</tr>
+<tr>
+<td>React Hook Form</td>
+<td>Gerenciamento de formularios</td>
+</tr>
+<tr>
+<td>Zod</td>
+<td>Validacao de schemas</td>
+</tr>
+</tbody>
+</table>
+<h2 id="testes">2.5 Testes</h2>
+<table>
+<thead>
+<tr>
+<th>Tecnologia</th>
+<th>Versao</th>
+<th>Funcao</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Vitest</td>
+<td>4.1.0</td>
+<td>Testes unitarios</td>
+</tr>
+<tr>
+<td>Playwright</td>
+<td>1.57.0</td>
+<td>Testes E2E</td>
+</tr>
+<tr>
+<td>Testing Library</td>
+<td>16.0.0</td>
+<td>Testes de componente</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="arquitetura-do-projeto">3. ARQUITETURA DO PROJETO</h1>
+<h2 id="estrutura-de-pastas">3.1 Estrutura de Pastas</h2>
+<pre><code>src/
+|-- App.tsx                    # Roteamento principal
+|-- main.tsx                   # Entry point React
+|-- index.css                  # Estilos globais + variaveis CSS
+|-- contexts/
+|   |-- AuthContext.tsx         # Estado global de autenticacao
+|-- pages/
+|   |-- Dashboard.tsx          # Tela inicial (106 linhas)
+|   |-- Auth.tsx               # Login/cadastro (210 linhas)
+|   |-- WeeklyPlanner.tsx      # Planner semanal (685 linhas)
+|   |-- FocusMode.tsx          # Timer Pomodoro (296 linhas)
+|   |-- SettingsPage.tsx       # Configuracoes (319 linhas)
+|   |-- Analytics.tsx          # Relatorios (107 linhas)
+|   |-- Subjects.tsx           # Materias/anotacoes (337 linhas)
+|   |-- NotFound.tsx           # Pagina 404 (24 linhas)
+|   |-- Index.tsx              # Re-export Dashboard
+|-- hooks/
+|   |-- useAnalytics.ts        # Calculos de analytics (148 linhas)
+|   |-- useStudySessions.ts    # CRUD sessoes (122 linhas)
+|   |-- useSubjects.ts         # CRUD materias (114 linhas)
+|   |-- usePlannerBlocks.ts    # CRUD planner (205 linhas)
+|   |-- useSubjectNotes.ts     # CRUD anotacoes (101 linhas)
+|   |-- useProfile.ts          # Perfil usuario (77 linhas)
+|   |-- use-toast.ts           # Hook de toast (186 linhas)
+|   |-- use-mobile.tsx         # Deteccao mobile (19 linhas)
+|-- components/
+|   |-- layout/
+|   |   |-- AppLayout.tsx      # Layout com navegacao (59 linhas)
+|   |-- ErrorBoundary.tsx      # Error boundary (45 linhas)
+|   |-- ProtectedRoute.tsx     # Guard de autenticacao (21 linhas)
+|   |-- ProgressRing.tsx       # Anel de progresso SVG (55 linhas)
+|   |-- StatCard.tsx           # Card de estatistica (32 linhas)
+|   |-- StudyCard.tsx          # Card de sessao (67 linhas)
+|   |-- SubjectBadge.tsx       # Badge de materia (43 linhas)
+|   |-- NavLink.tsx            # Link de navegacao (28 linhas)
+|   |-- ui/                    # 48 componentes shadcn/ui
+|-- integrations/
+|   |-- supabase/
+|       |-- client.ts          # Cliente Supabase
+|       |-- types.ts           # Tipos gerados do banco
+|-- lib/
+    |-- utils.ts               # Funcao cn() para classes</code></pre>
+<h2 id="fluxo-de-dados">3.2 Fluxo de Dados</h2>
+<pre><code>Usuario -&gt; Pagina -&gt; Hook (React Query) -&gt; Supabase Client -&gt; PostgreSQL
+                                                   |
+                                              RLS Policy
+                                           (filtra por user_id)</code></pre>
+<ol type="1">
+<li>Usuario interage com a interface (pagina)</li>
+<li>Pagina chama hook customizado (useSubjects, usePlannerBlocks,
+etc.)</li>
+<li>Hook usa React Query para cache e estado do servidor</li>
+<li>React Query chama Supabase Client (SDK JavaScript)</li>
+<li>Supabase aplica Row Level Security (RLS) para isolamento</li>
+<li>Dados retornam e sao cacheados por 5 minutos</li>
+<li>Mutacoes invalidam cache relevante automaticamente</li>
+</ol>
+<h2 id="roteamento">3.3 Roteamento</h2>
+<pre><code>/auth              -&gt; Auth.tsx (publica)
+/                  -&gt; Dashboard.tsx (protegida)
+/subjects          -&gt; Subjects.tsx (protegida)
+/planner           -&gt; WeeklyPlanner.tsx (protegida)
+/focus             -&gt; FocusMode.tsx (protegida)
+/analytics         -&gt; Analytics.tsx (protegida)
+/settings          -&gt; SettingsPage.tsx (protegida)
+*                  -&gt; NotFound.tsx</code></pre>
+<p>Todas as rotas exceto <code>/auth</code> sao protegidas pelo
+componente <code>ProtectedRoute</code> que verifica a sessao do
+Supabase.</p>
+<h2 id="navegacao">3.4 Navegacao</h2>
+<p>Barra de navegacao inferior fixa com 6 itens:</p>
+<table>
+<thead>
+<tr>
+<th>Icone</th>
+<th>Label</th>
+<th>Rota</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LayoutDashboard</td>
+<td>Inicio</td>
+<td>/</td>
+</tr>
+<tr>
+<td>BookOpen</td>
+<td>Materias</td>
+<td>/subjects</td>
+</tr>
+<tr>
+<td>CalendarDays</td>
+<td>Planner</td>
+<td>/planner</td>
+</tr>
+<tr>
+<td>Timer</td>
+<td>Foco</td>
+<td>/focus</td>
+</tr>
+<tr>
+<td>BarChart3</td>
+<td>Relatorios</td>
+<td>/analytics</td>
+</tr>
+<tr>
+<td>Settings</td>
+<td>Config</td>
+<td>/settings</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="banco-de-dados">4. BANCO DE DADOS</h1>
+<h2 id="diagrama-de-tabelas">4.1 Diagrama de Tabelas</h2>
+<pre><code>auth.users (Supabase gerenciado)
+    |
+    |-- 1:1 --&gt; profiles
+    |-- 1:N --&gt; subjects
+    |               |-- 1:N --&gt; subject_notes
+    |               |-- 1:N --&gt; study_sessions
+    |               |-- 1:N --&gt; planner_blocks
+    |-- 1:N --&gt; study_sessions
+    |-- 1:N --&gt; planner_blocks</code></pre>
+<h2 id="tabela-profiles">4.2 Tabela: profiles</h2>
+<p>Criada automaticamente via trigger quando um usuario se cadastra.</p>
+<table>
+<thead>
+<tr>
+<th>Coluna</th>
+<th>Tipo</th>
+<th>Default</th>
+<th>Descricao</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>UUID (PK)</td>
+<td>FK auth.users</td>
+<td>ID do usuario</td>
+</tr>
+<tr>
+<td>full_name</td>
+<td>TEXT</td>
+<td>NULL</td>
+<td>Nome completo</td>
+</tr>
+<tr>
+<td>avatar_url</td>
+<td>TEXT</td>
+<td>NULL</td>
+<td>URL da foto (Google)</td>
+</tr>
+<tr>
+<td>daily_goal_hours</td>
+<td>NUMERIC(4,1)</td>
+<td>4.0</td>
+<td>Meta diaria em horas</td>
+</tr>
+<tr>
+<td>weekly_goal_hours</td>
+<td>NUMERIC(5,1)</td>
+<td>25.0</td>
+<td>Meta semanal em horas</td>
+</tr>
+<tr>
+<td>monthly_goal_hours</td>
+<td>NUMERIC(6,1)</td>
+<td>120.0</td>
+<td>Meta mensal em horas</td>
+</tr>
+<tr>
+<td>focus_duration_minutes</td>
+<td>INTEGER</td>
+<td>25</td>
+<td>Duracao foco Pomodoro</td>
+</tr>
+<tr>
+<td>break_duration_minutes</td>
+<td>INTEGER</td>
+<td>5</td>
+<td>Duracao intervalo</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>TIMESTAMPTZ</td>
+<td>now()</td>
+<td>Data de criacao</td>
+</tr>
+<tr>
+<td>updated_at</td>
+<td>TIMESTAMPTZ</td>
+<td>now()</td>
+<td>Ultima atualizacao</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Constraints:</strong> daily_goal 0.5-24h, weekly 1-168h,
+monthly 1-744h, focus 5-120min, break 1-30min, full_name max 100
+chars.</p>
+<h2 id="tabela-subjects">4.3 Tabela: subjects</h2>
+<table>
+<thead>
+<tr>
+<th>Coluna</th>
+<th>Tipo</th>
+<th>Default</th>
+<th>Descricao</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>UUID (PK)</td>
+<td>gen_random_uuid()</td>
+<td>ID da materia</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>UUID (FK)</td>
+<td>NOT NULL</td>
+<td>Dono da materia</td>
+</tr>
+<tr>
+<td>name</td>
+<td>TEXT</td>
+<td>NOT NULL</td>
+<td>Nome (1-50 chars)</td>
+</tr>
+<tr>
+<td>color</td>
+<td>TEXT</td>
+<td>‘indigo’</td>
+<td>Cor visual</td>
+</tr>
+<tr>
+<td>is_archived</td>
+<td>BOOLEAN</td>
+<td>false</td>
+<td>Soft delete</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>TIMESTAMPTZ</td>
+<td>now()</td>
+<td>Criacao</td>
+</tr>
+<tr>
+<td>updated_at</td>
+<td>TIMESTAMPTZ</td>
+<td>now()</td>
+<td>Atualizacao</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Cores validas:</strong> indigo, emerald, amber, sky, rose,
+violet <strong>Constraint unica:</strong> (user_id, name) - nao pode
+repetir nome por usuario.</p>
+<h2 id="tabela-study_sessions">4.4 Tabela: study_sessions</h2>
+<table>
+<thead>
+<tr>
+<th>Coluna</th>
+<th>Tipo</th>
+<th>Default</th>
+<th>Descricao</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>UUID (PK)</td>
+<td>gen_random_uuid()</td>
+<td>ID da sessao</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>UUID (FK)</td>
+<td>NOT NULL</td>
+<td>Dono</td>
+</tr>
+<tr>
+<td>subject_id</td>
+<td>UUID (FK)</td>
+<td>NOT NULL</td>
+<td>Materia vinculada</td>
+</tr>
+<tr>
+<td>type</td>
+<td>TEXT</td>
+<td>‘focus’</td>
+<td>Tipo: focus ou break</td>
+</tr>
+<tr>
+<td>started_at</td>
+<td>TIMESTAMPTZ</td>
+<td>NOT NULL</td>
+<td>Inicio da sessao</td>
+</tr>
+<tr>
+<td>ended_at</td>
+<td>TIMESTAMPTZ</td>
+<td>NULL</td>
+<td>Fim (preenchido ao finalizar)</td>
+</tr>
+<tr>
+<td>duration_seconds</td>
+<td>INTEGER</td>
+<td>NULL</td>
+<td>Duracao calculada</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>TIMESTAMPTZ</td>
+<td>now()</td>
+<td>Registro</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Constraints:</strong> type IN (‘focus’, ‘break’), duration
+&gt;= 0, ended_at &gt;= started_at.</p>
+<h2 id="tabela-subject_notes">4.5 Tabela: subject_notes</h2>
+<table>
+<thead>
+<tr>
+<th>Coluna</th>
+<th>Tipo</th>
+<th>Default</th>
+<th>Descricao</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>UUID (PK)</td>
+<td>gen_random_uuid()</td>
+<td>ID da nota</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>UUID (FK)</td>
+<td>NOT NULL</td>
+<td>Dono</td>
+</tr>
+<tr>
+<td>subject_id</td>
+<td>UUID (FK)</td>
+<td>NOT NULL</td>
+<td>Materia vinculada</td>
+</tr>
+<tr>
+<td>title</td>
+<td>TEXT</td>
+<td>NOT NULL</td>
+<td>Titulo (1-100 chars)</td>
+</tr>
+<tr>
+<td>content</td>
+<td>TEXT</td>
+<td>’’</td>
+<td>Conteudo (0-5000 chars)</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>TIMESTAMPTZ</td>
+<td>now()</td>
+<td>Criacao</td>
+</tr>
+<tr>
+<td>updated_at</td>
+<td>TIMESTAMPTZ</td>
+<td>now()</td>
+<td>Atualizacao</td>
+</tr>
+</tbody>
+</table>
+<h2 id="tabela-planner_blocks">4.6 Tabela: planner_blocks</h2>
+<table>
+<thead>
+<tr>
+<th>Coluna</th>
+<th>Tipo</th>
+<th>Default</th>
+<th>Descricao</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>UUID (PK)</td>
+<td>gen_random_uuid()</td>
+<td>ID do bloco</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>UUID (FK)</td>
+<td>NOT NULL</td>
+<td>Dono</td>
+</tr>
+<tr>
+<td>subject_id</td>
+<td>UUID (FK)</td>
+<td>NULL</td>
+<td>Materia (opcional)</td>
+</tr>
+<tr>
+<td>title</td>
+<td>TEXT</td>
+<td>NOT NULL</td>
+<td>Titulo (1-100 chars)</td>
+</tr>
+<tr>
+<td>day_of_week</td>
+<td>INTEGER</td>
+<td>NOT NULL</td>
+<td>0=Seg, 6=Dom</td>
+</tr>
+<tr>
+<td>start_time</td>
+<td>TIME</td>
+<td>NOT NULL</td>
+<td>Hora inicio</td>
+</tr>
+<tr>
+<td>end_time</td>
+<td>TIME</td>
+<td>NOT NULL</td>
+<td>Hora fim</td>
+</tr>
+<tr>
+<td>duration_minutes</td>
+<td>INTEGER</td>
+<td>NOT NULL</td>
+<td>Duracao (1-480min)</td>
+</tr>
+<tr>
+<td>color</td>
+<td>TEXT</td>
+<td>‘indigo’</td>
+<td>Cor visual</td>
+</tr>
+<tr>
+<td>session_type</td>
+<td>TEXT</td>
+<td>‘estudo’</td>
+<td>Tipo da sessao</td>
+</tr>
+<tr>
+<td>notes</td>
+<td>TEXT</td>
+<td>NULL</td>
+<td>Observacoes (0-1000)</td>
+</tr>
+<tr>
+<td>status</td>
+<td>TEXT</td>
+<td>‘planned’</td>
+<td>Estado do bloco</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>TIMESTAMPTZ</td>
+<td>now()</td>
+<td>Criacao</td>
+</tr>
+<tr>
+<td>updated_at</td>
+<td>TIMESTAMPTZ</td>
+<td>now()</td>
+<td>Atualizacao</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Tipos de sessao:</strong> estudo, revisao, exercicio, leitura
+<strong>Status:</strong> planned, in_progress, completed, missed</p>
+<h2 id="seguranca-rls">4.7 Seguranca (RLS)</h2>
+<p>Todas as tabelas possuem Row Level Security habilitado com politicas
+identicas:</p>
+<ul>
+<li><strong>SELECT:</strong> <code>auth.uid() = user_id</code></li>
+<li><strong>INSERT:</strong> <code>auth.uid() = user_id</code></li>
+<li><strong>UPDATE:</strong> <code>auth.uid() = user_id</code></li>
+<li><strong>DELETE:</strong> <code>auth.uid() = user_id</code></li>
+</ul>
+<p>Isso garante que cada usuario so acessa seus proprios dados.</p>
+<h2 id="triggers">4.8 Triggers</h2>
+<table>
+<colgroup>
+<col style="width: 36%" />
+<col style="width: 32%" />
+<col style="width: 32%" />
+</colgroup>
+<thead>
+<tr>
+<th>Trigger</th>
+<th>Tabela</th>
+<th>Funcao</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>on_auth_user_created</td>
+<td>auth.users</td>
+<td>Auto-cria profile com nome e avatar</td>
+</tr>
+<tr>
+<td>set_profiles_updated_at</td>
+<td>profiles</td>
+<td>Atualiza updated_at</td>
+</tr>
+<tr>
+<td>set_subjects_updated_at</td>
+<td>subjects</td>
+<td>Atualiza updated_at</td>
+</tr>
+<tr>
+<td>set_notes_updated_at</td>
+<td>subject_notes</td>
+<td>Atualiza updated_at</td>
+</tr>
+<tr>
+<td>set_planner_blocks_updated_at</td>
+<td>planner_blocks</td>
+<td>Atualiza updated_at</td>
+</tr>
+</tbody>
+</table>
+<h2 id="indexes">4.9 Indexes</h2>
+<table>
+<colgroup>
+<col style="width: 29%" />
+<col style="width: 33%" />
+<col style="width: 37%" />
+</colgroup>
+<thead>
+<tr>
+<th>Index</th>
+<th>Tabela</th>
+<th>Colunas</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>idx_subjects_user_id</td>
+<td>subjects</td>
+<td>user_id</td>
+</tr>
+<tr>
+<td>idx_sessions_user_started</td>
+<td>study_sessions</td>
+<td>user_id, started_at</td>
+</tr>
+<tr>
+<td>idx_sessions_subject</td>
+<td>study_sessions</td>
+<td>subject_id</td>
+</tr>
+<tr>
+<td>idx_sessions_user_type_started</td>
+<td>study_sessions</td>
+<td>user_id, type, started_at</td>
+</tr>
+<tr>
+<td>idx_subjects_user_archived</td>
+<td>subjects</td>
+<td>user_id, is_archived</td>
+</tr>
+<tr>
+<td>idx_notes_subject</td>
+<td>subject_notes</td>
+<td>subject_id</td>
+</tr>
+<tr>
+<td>idx_notes_user</td>
+<td>subject_notes</td>
+<td>user_id</td>
+</tr>
+<tr>
+<td>idx_planner_user</td>
+<td>planner_blocks</td>
+<td>user_id</td>
+</tr>
+<tr>
+<td>idx_planner_user_day</td>
+<td>planner_blocks</td>
+<td>user_id, day_of_week</td>
+</tr>
+<tr>
+<td>idx_planner_subject</td>
+<td>planner_blocks</td>
+<td>subject_id</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="autenticacao">5. AUTENTICACAO</h1>
+<h2 id="metodos-de-login">5.1 Metodos de Login</h2>
+<table>
+<colgroup>
+<col style="width: 42%" />
+<col style="width: 57%" />
+</colgroup>
+<thead>
+<tr>
+<th>Metodo</th>
+<th>Descricao</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Email/Senha</td>
+<td>Cadastro com confirmacao por email, login com credenciais</td>
+</tr>
+<tr>
+<td>Google OAuth</td>
+<td>Login via conta Google (web e mobile)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="fluxo-de-autenticacao">5.2 Fluxo de Autenticacao</h2>
+<pre><code>1. Usuario acessa /auth
+2. Preenche email/senha ou clica &quot;Continuar com Google&quot;
+3. Supabase Auth valida credenciais
+4. Sessao criada e armazenada no localStorage
+5. AuthContext atualiza estado (user, session)
+6. ProtectedRoute libera acesso as rotas
+7. Profile auto-criado via trigger no banco</code></pre>
+<h2 id="seguranca-de-autenticacao">5.3 Seguranca de Autenticacao</h2>
+<ul>
+<li><strong>Rate limiting:</strong> 5 tentativas + lockout de 10
+minutos</li>
+<li><strong>Cooldown:</strong> 2 segundos entre tentativas</li>
+<li><strong>Senha minima:</strong> 8 caracteres</li>
+<li><strong>Email:</strong> Validacao com regex</li>
+<li><strong>Nome:</strong> Maximo 100 caracteres</li>
+<li><strong>Erros sanitizados:</strong> Mensagens genericas em
+portugues</li>
+<li><strong>Auto-refresh:</strong> Token renovado automaticamente</li>
+<li><strong>Mobile OAuth:</strong> Deep link com URL scheme
+<code>com.studyflow.app://login</code></li>
+</ul>
+<hr />
+<h1 id="detalhamento-das-telas">6. DETALHAMENTO DAS TELAS</h1>
+<h2 id="dashboard">6.1 Dashboard (/)</h2>
+<p>A tela inicial exibe:</p>
+<ul>
+<li>Saudacao com data do dia</li>
+<li>Contagem de sessoes de hoje</li>
+<li>Card de streak (dias seguidos estudando)</li>
+<li>Card de horas estudadas hoje</li>
+<li>Progresso semanal com barra por dia</li>
+<li>Lista de sessoes do dia com horarios</li>
+<li>Botao “Iniciar Foco” se nao houver sessoes</li>
+</ul>
+<p><strong>Hooks utilizados:</strong> useTodaySessions, useGoalProgress,
+useStreak</p>
+<h2 id="planner-semanal-planner">6.2 Planner Semanal (/planner)</h2>
+<p>Grade visual com:</p>
+<ul>
+<li><strong>Visao Semana:</strong> Colunas seg-dom, linhas
+06:00-22:00</li>
+<li><strong>Visao Dia:</strong> Timeline vertical do dia
+selecionado</li>
+<li><strong>Blocos coloridos</strong> posicionados por horario e
+duracao</li>
+<li><strong>Criar bloco:</strong> Dialog com materia, dia, horario,
+tipo, cor, observacao</li>
+<li><strong>Editar bloco:</strong> Dialog com opcoes de alterar ou
+excluir</li>
+<li><strong>Status visual:</strong> Indicador de cor por estado
+(planejado/concluido/perdido)</li>
+<li><strong>Scroll horizontal</strong> para dias + scroll vertical para
+horarios</li>
+<li><strong>Cabecalho sticky</strong> com dias da semana</li>
+</ul>
+<p><strong>Hooks utilizados:</strong> usePlannerBlocks, useSubjects</p>
+<h2 id="modo-foco-focus">6.3 Modo Foco (/focus)</h2>
+<p>Timer Pomodoro com:</p>
+<ul>
+<li><strong>Timer circular SVG</strong> com animacao suave</li>
+<li><strong>Fases:</strong> Foco (padrao 25min) -&gt; Intervalo (padrao
+5min) -&gt; Foco…</li>
+<li><strong>Seletor de materia</strong> (apenas quando pausado)</li>
+<li><strong>Controles:</strong> Play/Pause, Reset, Completar sessao</li>
+<li><strong>Contador de sessoes:</strong> Ate 4 sessoes por ciclo</li>
+<li><strong>Salvamento automatico</strong> ao completar com retry (3
+tentativas)</li>
+<li><strong>Background handling:</strong> Compensa tempo em segundo
+plano</li>
+<li><strong>Precisao:</strong> Usa requestAnimationFrame +
+Date.now()</li>
+</ul>
+<p><strong>Hooks utilizados:</strong> useSubjects, useProfile,
+useCreateSession, useUpdateSession</p>
+<h2 id="materias-subjects">6.4 Materias (/subjects)</h2>
+<p>Duas visoes:</p>
+<p><strong>1. Lista de Materias:</strong> - Grid 2 colunas com
+SubjectBadge - Cada badge mostra: nome, cor, sessoes, horas - Botao
+adicionar materia (dialog com nome + cor) - Botao deletar (soft delete /
+archive)</p>
+<p><strong>2. Anotacoes da Materia:</strong> - Lista de notas vinculadas
+a materia selecionada - Criar nota com titulo e conteudo - Editar e
+excluir notas existentes - Botao voltar para lista de materias</p>
+<p><strong>Hooks utilizados:</strong> useSubjects, useSubjectNotes,
+useStudySessions</p>
+<h2 id="relatorios-analytics">6.5 Relatorios (/analytics)</h2>
+<p>Dashboard analitico com:</p>
+<ul>
+<li><strong>4 StatCards:</strong> Total horas, Streak, % meta diaria,
+Qtd sessoes</li>
+<li><strong>Grafico de barras:</strong> Horas por dia da semana
+(Recharts)</li>
+<li><strong>Distribuicao por materia:</strong> Barras coloridas com % e
+horas</li>
+<li><strong>3 ProgressRings:</strong> Meta semanal, mensal e diaria</li>
+</ul>
+<p><strong>Hooks utilizados:</strong> useWeeklyAnalytics,
+useGoalProgress, useStreak</p>
+<h2 id="configuracoes-settings">6.6 Configuracoes (/settings)</h2>
+<ul>
+<li><strong>Perfil:</strong> Avatar, nome e email do usuario</li>
+<li><strong>Metas:</strong> Dialog com inputs para metas
+diaria/semanal/mensal</li>
+<li><strong>Timer:</strong> Dialog com duracao de foco e intervalo</li>
+<li><strong>Notificacoes:</strong> Toggles para lembrete, fim de sessao,
+resumo semanal</li>
+<li><strong>Aparencia:</strong> Selector de tema
+(claro/escuro/automatico)</li>
+<li><strong>Sair:</strong> Botao de logout</li>
+</ul>
+<p><strong>Hooks utilizados:</strong> useAuth, useProfile,
+useUpdateProfile</p>
+<hr />
+<h1 id="hooks-de-dados">7. HOOKS DE DADOS</h1>
+<h2 id="padrao-de-implementacao">7.1 Padrao de Implementacao</h2>
+<p>Todos os hooks seguem o mesmo padrao:</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Query (leitura)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">function</span> <span class="fu">useExemplo</span>() {</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> { user } <span class="op">=</span> <span class="fu">useAuth</span>()<span class="op">;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="fu">useQuery</span>({</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    queryKey<span class="op">:</span> [<span class="st">&quot;exemplo&quot;</span><span class="op">,</span> user<span class="op">?.</span><span class="at">id</span>]<span class="op">,</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    queryFn<span class="op">:</span> <span class="kw">async</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>      <span class="kw">const</span> { data<span class="op">,</span> error } <span class="op">=</span> <span class="cf">await</span> supabase</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">from</span>(<span class="st">&quot;tabela&quot;</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">select</span>(<span class="st">&quot;*&quot;</span>)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">eq</span>(<span class="st">&quot;user_id&quot;</span><span class="op">,</span> user<span class="op">!.</span><span class="at">id</span>)<span class="op">;</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (error) <span class="cf">throw</span> error<span class="op">;</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> data<span class="op">;</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    enabled<span class="op">:</span> <span class="op">!!</span>user<span class="op">,</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="co">// Mutation (escrita)</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">function</span> <span class="fu">useCreateExemplo</span>() {</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> { user } <span class="op">=</span> <span class="fu">useAuth</span>()<span class="op">;</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> queryClient <span class="op">=</span> <span class="fu">useQueryClient</span>()<span class="op">;</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="fu">useMutation</span>({</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    mutationFn<span class="op">:</span> <span class="kw">async</span> (dados) <span class="kw">=&gt;</span> {</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>      <span class="co">// Validacoes</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>      <span class="kw">const</span> { data<span class="op">,</span> error } <span class="op">=</span> <span class="cf">await</span> supabase</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">from</span>(<span class="st">&quot;tabela&quot;</span>)</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">insert</span>({ user_id<span class="op">:</span> user<span class="op">!.</span><span class="at">id</span><span class="op">,</span> <span class="op">...</span>dados })</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">select</span>()<span class="op">.</span><span class="fu">single</span>()<span class="op">;</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (error) <span class="cf">throw</span> error<span class="op">;</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> data<span class="op">;</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>    onSuccess<span class="op">:</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>      queryClient<span class="op">.</span><span class="fu">invalidateQueries</span>({ queryKey<span class="op">:</span> [<span class="st">&quot;exemplo&quot;</span>] })<span class="op">;</span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h2 id="configuracao-do-react-query">7.2 Configuracao do React
+Query</h2>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> queryClient <span class="op">=</span> <span class="kw">new</span> <span class="fu">QueryClient</span>({</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  defaultOptions<span class="op">:</span> {</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    queries<span class="op">:</span> {</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>      staleTime<span class="op">:</span> <span class="dv">1000</span> <span class="op">*</span> <span class="dv">60</span> <span class="op">*</span> <span class="dv">5</span><span class="op">,</span>      <span class="co">// 5 minutos</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>      gcTime<span class="op">:</span> <span class="dv">1000</span> <span class="op">*</span> <span class="dv">60</span> <span class="op">*</span> <span class="dv">30</span><span class="op">,</span>         <span class="co">// 30 minutos</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>      retry<span class="op">:</span> <span class="dv">1</span><span class="op">,</span>                        <span class="co">// 1 retry</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>      refetchOnWindowFocus<span class="op">:</span> <span class="kw">false</span><span class="op">,</span>     <span class="co">// Nao refetch ao focar</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<hr />
+<h1 id="design-system">8. DESIGN SYSTEM</h1>
+<h2 id="paleta-de-cores">8.1 Paleta de Cores</h2>
+<table>
+<thead>
+<tr>
+<th>Nome</th>
+<th>Valor HSL</th>
+<th>Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Primary</td>
+<td>hsl(243, 75%, 59%)</td>
+<td>Acoes principais, botoes, links</td>
+</tr>
+<tr>
+<td>Accent</td>
+<td>hsl(142, 71%, 45%)</td>
+<td>Sucesso, intervalos, confirmacoes</td>
+</tr>
+<tr>
+<td>Destructive</td>
+<td>hsl(0, 84%, 60%)</td>
+<td>Erros, exclusoes, perigo</td>
+</tr>
+<tr>
+<td>Background</td>
+<td>hsl(0, 0%, 98%)</td>
+<td>Fundo geral (light)</td>
+</tr>
+<tr>
+<td>Foreground</td>
+<td>hsl(222, 47%, 11%)</td>
+<td>Texto principal</td>
+</tr>
+<tr>
+<td>Muted</td>
+<td>hsl(220, 14%, 96%)</td>
+<td>Elementos secundarios</td>
+</tr>
+<tr>
+<td>Card</td>
+<td>hsl(0, 0%, 100%)</td>
+<td>Fundo de cards</td>
+</tr>
+</tbody>
+</table>
+<h3 id="cores-de-materias">Cores de Materias</h3>
+<table>
+<thead>
+<tr>
+<th>Cor</th>
+<th>Background</th>
+<th>Texto</th>
+<th>Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>indigo</td>
+<td>bg-indigo-500</td>
+<td>text-indigo-700</td>
+<td>Padrao</td>
+</tr>
+<tr>
+<td>emerald</td>
+<td>bg-emerald-500</td>
+<td>text-emerald-700</td>
+<td>-</td>
+</tr>
+<tr>
+<td>amber</td>
+<td>bg-amber-500</td>
+<td>text-amber-700</td>
+<td>-</td>
+</tr>
+<tr>
+<td>sky</td>
+<td>bg-sky-500</td>
+<td>text-sky-700</td>
+<td>-</td>
+</tr>
+<tr>
+<td>rose</td>
+<td>bg-rose-500</td>
+<td>text-rose-700</td>
+<td>-</td>
+</tr>
+<tr>
+<td>violet</td>
+<td>bg-violet-500</td>
+<td>text-violet-700</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<h2 id="tipografia">8.2 Tipografia</h2>
+<ul>
+<li><strong>Familia:</strong> Inter (Google Fonts)</li>
+<li><strong>Fallback:</strong> system-ui, sans-serif</li>
+<li><strong>Pesos:</strong> 400 (regular), 500 (medium), 600 (semibold),
+700 (bold)</li>
+<li><strong>Tamanhos comuns:</strong> text-xs (9px labels), text-sm,
+text-base, text-2xl, text-3xl</li>
+</ul>
+<h2 id="espacamentos-e-bordas">8.3 Espacamentos e Bordas</h2>
+<ul>
+<li><strong>Border radius:</strong> 0.75rem (12px) padrao, com variantes
+sm/md/lg/xl/2xl</li>
+<li><strong>Sombras:</strong> shadow-card (suave), shadow-card-hover
+(medio), shadow-elevated (forte)</li>
+<li><strong>Transicao padrao:</strong> 200ms cubic-bezier(0.4, 0, 0.2,
+1)</li>
+</ul>
+<h2 id="modo-escuro">8.4 Modo Escuro</h2>
+<p>O app suporta tres modos de tema:</p>
+<ul>
+<li><strong>Claro:</strong> Fundo branco, textos escuros</li>
+<li><strong>Escuro:</strong> Fundo hsl(240, 10%, 3.9%), textos
+claros</li>
+<li><strong>Automatico:</strong> Segue preferencia do sistema
+operacional</li>
+</ul>
+<p>Implementado via classe CSS <code>.dark</code> no elemento raiz +
+variaveis CSS.</p>
+<hr />
+<h1 id="configuracao-mobile-capacitor">9. CONFIGURACAO MOBILE
+(CAPACITOR)</h1>
+<h2 id="identificacao-do-app">9.1 Identificacao do App</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>App ID</td>
+<td>com.studyflow.app (dev) / br.com.mcconsultoriati.studyflow
+(prod)</td>
+</tr>
+<tr>
+<td>App Name</td>
+<td>StudyFlow</td>
+</tr>
+<tr>
+<td>Web Directory</td>
+<td>dist</td>
+</tr>
+<tr>
+<td>Android Scheme</td>
+<td>https</td>
+</tr>
+</tbody>
+</table>
+<h2 id="plugins-configurados">9.2 Plugins Configurados</h2>
+<table>
+<thead>
+<tr>
+<th>Plugin</th>
+<th>Configuracao</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SplashScreen</td>
+<td>2s duracao, fundo branco, auto-hide</td>
+</tr>
+<tr>
+<td>StatusBar</td>
+<td>Style Light, overlay WebView</td>
+</tr>
+<tr>
+<td>Keyboard</td>
+<td>Resize body, fullscreen</td>
+</tr>
+</tbody>
+</table>
+<h2 id="ios-specifics">9.3 iOS Specifics</h2>
+<ul>
+<li><strong>URL Scheme:</strong> com.studyflow.app (para deep links
+OAuth)</li>
+<li><strong>Safe Areas:</strong> Tratamento de notch e home indicator
+via CSS env()</li>
+<li><strong>Orientacoes:</strong> Portrait (principal), Landscape
+(suportado)</li>
+<li><strong>Status Bar:</strong> Overlay com fundo do app, icones
+brancos</li>
+</ul>
+<h2 id="scripts-de-build">9.4 Scripts de Build</h2>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Desenvolvimento</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> run dev</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Build producao + sync iOS</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> run build <span class="kw">&amp;&amp;</span> <span class="ex">npx</span> cap sync ios</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Abrir no Xcode</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="ex">npx</span> cap open ios</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Build producao + sync Android</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> run build <span class="kw">&amp;&amp;</span> <span class="ex">npx</span> cap sync android</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Abrir no Android Studio</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="ex">npx</span> cap open android</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Gerar assets (icones e splash)</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="ex">npx</span> capacitor-assets generate <span class="at">--iconBackgroundColor</span> <span class="st">&#39;#6C63FF&#39;</span> <span class="at">--splashBackgroundColor</span> <span class="st">&#39;#FFFFFF&#39;</span></span></code></pre></div>
+<hr />
+<h1 id="seguranca">10. SEGURANCA</h1>
+<h2 id="medidas-implementadas">10.1 Medidas Implementadas</h2>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>Medida</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Banco</td>
+<td>RLS em todas as tabelas</td>
+</tr>
+<tr>
+<td>Banco</td>
+<td>Constraints de validacao em todos os campos</td>
+</tr>
+<tr>
+<td>Auth</td>
+<td>Rate limiting (5 tentativas + 10min lockout)</td>
+</tr>
+<tr>
+<td>Auth</td>
+<td>Sanitizacao de mensagens de erro</td>
+</tr>
+<tr>
+<td>Auth</td>
+<td>Senha minima 8 caracteres</td>
+</tr>
+<tr>
+<td>Auth</td>
+<td>Validacao de email com regex</td>
+</tr>
+<tr>
+<td>Frontend</td>
+<td>ErrorBoundary para crashes</td>
+</tr>
+<tr>
+<td>Frontend</td>
+<td>Validacao de inputs nos hooks</td>
+</tr>
+<tr>
+<td>HTML</td>
+<td>X-Frame-Options: DENY</td>
+</tr>
+<tr>
+<td>HTML</td>
+<td>X-Content-Type-Options: nosniff</td>
+</tr>
+<tr>
+<td>HTML</td>
+<td>Referrer-Policy: strict-origin</td>
+</tr>
+<tr>
+<td>Git</td>
+<td>.env fora do versionamento</td>
+</tr>
+<tr>
+<td>Git</td>
+<td>.env.example como template</td>
+</tr>
+</tbody>
+</table>
+<h2 id="variaveis-de-ambiente">10.2 Variaveis de Ambiente</h2>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># .env (NAO versionado)</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="va">VITE_SUPABASE_PROJECT_ID</span><span class="op">=</span><span class="st">&quot;xxx&quot;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="va">VITE_SUPABASE_PUBLISHABLE_KEY</span><span class="op">=</span><span class="st">&quot;xxx&quot;</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="va">VITE_SUPABASE_URL</span><span class="op">=</span><span class="st">&quot;https://xxx.supabase.co&quot;</span></span></code></pre></div>
+<p>Apenas chaves publicas (publishable key). A service_role key NUNCA e
+exposta no frontend.</p>
+<hr />
+<h1 id="deploy-e-infraestrutura">11. DEPLOY E INFRAESTRUTURA</h1>
+<h2 id="web-vps-com-nginx">11.1 Web (VPS com Nginx)</h2>
+<ul>
+<li><strong>Dominio:</strong>
+planejamento.estudante.mcconsultoriati.com.br</li>
+<li><strong>Servidor:</strong> VPS com Nginx</li>
+<li><strong>SSL:</strong> Certbot (Let’s Encrypt)</li>
+<li><strong>Arquivos:</strong> Conteudo da pasta <code>dist/</code>
+copiado para <code>/var/www/studyflow/</code></li>
+</ul>
+<p><strong>Configuracao Nginx:</strong></p>
+<pre class="nginx"><code>server {
+    server_name planejamento.estudante.mcconsultoriati.com.br;
+    root /var/www/studyflow;
+    index index.html;
+    location / { try_files $uri $uri/ /index.html; }
+    location /assets/ { expires 1y; add_header Cache-Control &quot;public, immutable&quot;; }
+}</code></pre>
+<h2 id="ios-app-store">11.2 iOS (App Store)</h2>
+<ul>
+<li><strong>Bundle ID:</strong> br.com.mcconsultoriati.studyflow</li>
+<li><strong>Status:</strong> Em revisao na Apple (submetido em marco
+2026)</li>
+<li><strong>Signing:</strong> Automatico via conta Apple Developer</li>
+<li><strong>Archive:</strong> Gerado no Xcode e uploaded via App Store
+Connect</li>
+</ul>
+<h2 id="backend-supabase">11.3 Backend (Supabase)</h2>
+<ul>
+<li><strong>Projeto:</strong> ndxphrglwwdftripdcjm</li>
+<li><strong>URL:</strong> https://ndxphrglwwdftripdcjm.supabase.co</li>
+<li><strong>Regiao:</strong> West US (Oregon)</li>
+<li><strong>Plano:</strong> Free tier</li>
+<li><strong>Auth Providers:</strong> Email/Password + Google OAuth</li>
+</ul>
+<hr />
+<h1 id="migrations-historico-de-evolucao-do-banco">12. MIGRATIONS
+(Historico de Evolucao do Banco)</h1>
+<h2 id="migration-001---schema-inicial">Migration 001 - Schema
+Inicial</h2>
+<ul>
+<li>Tabelas: profiles, subjects, study_sessions</li>
+<li>Indexes, RLS, triggers de auto-criacao e updated_at</li>
+</ul>
+<h2 id="migration-002---constraints-de-seguranca">Migration 002 -
+Constraints de Seguranca</h2>
+<ul>
+<li>CHECK constraints em ranges numericos</li>
+<li>Validacao de cores, tamanhos de texto</li>
+</ul>
+<h2 id="migration-003---anotacoes-por-materia">Migration 003 - Anotacoes
+por Materia</h2>
+<ul>
+<li>Tabela subject_notes</li>
+<li>Constraints de titulo e conteudo</li>
+<li>RLS e trigger de updated_at</li>
+</ul>
+<h2 id="migration-004---planner-semanal">Migration 004 - Planner
+Semanal</h2>
+<ul>
+<li>Tabela planner_blocks</li>
+<li>Constraints de dia, horario, duracao, tipo, status</li>
+<li>Indexes compostos para performance</li>
+<li>RLS e trigger de updated_at</li>
+</ul>
+<hr />
+<h1 id="contagem-de-codigo">13. CONTAGEM DE CODIGO</h1>
+<table>
+<thead>
+<tr>
+<th>Categoria</th>
+<th>Arquivos</th>
+<th>Linhas</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Paginas</td>
+<td>9</td>
+<td>2.086</td>
+</tr>
+<tr>
+<td>Hooks</td>
+<td>8</td>
+<td>972</td>
+</tr>
+<tr>
+<td>Componentes custom</td>
+<td>8</td>
+<td>350</td>
+</tr>
+<tr>
+<td>Contextos</td>
+<td>1</td>
+<td>166</td>
+</tr>
+<tr>
+<td>Componentes UI (shadcn)</td>
+<td>48</td>
+<td>~4.800</td>
+</tr>
+<tr>
+<td>Migrations SQL</td>
+<td>4</td>
+<td>299</td>
+</tr>
+<tr>
+<td>Config (vite, tailwind, etc)</td>
+<td>5</td>
+<td>~280</td>
+</tr>
+<tr>
+<td><strong>TOTAL</strong></td>
+<td><strong>83</strong></td>
+<td><strong>~8.953</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="guia-de-manutencao">14. GUIA DE MANUTENCAO</h1>
+<h2 id="ambiente-de-desenvolvimento">14.1 Ambiente de
+Desenvolvimento</h2>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Clonar repositorio</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone git@github.com:mcoutinho2512/study-flow-pro.git</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> study-flow-pro</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Instalar dependencias</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Criar .env a partir do exemplo</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> .env.example .env</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Editar .env com credenciais do Supabase</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Iniciar servidor de desenvolvimento</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> run dev</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Abre em http://localhost:8080</span></span></code></pre></div>
+<h2 id="adicionar-nova-funcionalidade">14.2 Adicionar Nova
+Funcionalidade</h2>
+<ol type="1">
+<li>Criar migration SQL se precisar de nova tabela</li>
+<li>Rodar migration no Supabase SQL Editor</li>
+<li>Atualizar types.ts com os novos tipos</li>
+<li>Criar hook em src/hooks/</li>
+<li>Criar pagina em src/pages/</li>
+<li>Adicionar rota em src/App.tsx</li>
+<li>Adicionar item na navegacao em AppLayout.tsx</li>
+<li>Testar localmente</li>
+<li>Build e sync:
+<code>npm run build &amp;&amp; npx cap sync ios</code></li>
+<li>Testar no dispositivo</li>
+</ol>
+<h2 id="deploy-de-atualizacao">14.3 Deploy de Atualizacao</h2>
+<p><strong>Web:</strong></p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> run build</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Copiar dist/ para o servidor via SCP/rsync</span></span></code></pre></div>
+<p><strong>iOS:</strong></p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> run build <span class="kw">&amp;&amp;</span> <span class="ex">npx</span> cap sync ios <span class="kw">&amp;&amp;</span> <span class="ex">npx</span> cap open ios</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># No Xcode: Product &gt; Archive &gt; Distribute &gt; App Store Connect</span></span></code></pre></div>
+<p><strong>Banco:</strong></p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Rodar novas migrations no Supabase SQL Editor</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co">-- Sempre DEPOIS das anteriores e na ordem numerica</span></span></code></pre></div>
+<h2 id="troubleshooting-comum">14.4 Troubleshooting Comum</h2>
+<table>
+<colgroup>
+<col style="width: 52%" />
+<col style="width: 47%" />
+</colgroup>
+<thead>
+<tr>
+<th>Problema</th>
+<th>Solucao</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OAuth Google nao funciona</td>
+<td>Verificar Redirect URLs no Supabase e Google Cloud</td>
+</tr>
+<tr>
+<td>Splash cortada no iOS</td>
+<td>Imagem deve ser 1290x2796, usar scaleAspectFill</td>
+</tr>
+<tr>
+<td>Status bar invisivel</td>
+<td>StatusBar style deve ser Light (icones brancos)</td>
+</tr>
+<tr>
+<td>Build falha no Xcode</td>
+<td>Cmd+Shift+K (clean) e retentar</td>
+</tr>
+<tr>
+<td>Dados nao aparecem</td>
+<td>Verificar se migration foi rodada e RLS esta correto</td>
+</tr>
+<tr>
+<td>npm install falha</td>
+<td>Usar –legacy-peer-deps</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="evolucoes-futuras-sugeridas">15. EVOLUCOES FUTURAS
+SUGERIDAS</h1>
+<table>
+<thead>
+<tr>
+<th>Prioridade</th>
+<th>Funcionalidade</th>
+<th>Descricao</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Alta</td>
+<td>Google Play Store</td>
+<td>Publicar versao Android</td>
+</tr>
+<tr>
+<td>Alta</td>
+<td>Notificacoes push</td>
+<td>Lembretes reais via push notification</td>
+</tr>
+<tr>
+<td>Media</td>
+<td>Modo offline</td>
+<td>Service workers + sync quando reconectar</td>
+</tr>
+<tr>
+<td>Media</td>
+<td>Drag and drop</td>
+<td>Mover blocos no planner arrastando</td>
+</tr>
+<tr>
+<td>Media</td>
+<td>Exportar dados</td>
+<td>PDF/CSV com relatorios de estudo</td>
+</tr>
+<tr>
+<td>Baixa</td>
+<td>Compartilhamento</td>
+<td>Compartilhar progresso em redes sociais</td>
+</tr>
+<tr>
+<td>Baixa</td>
+<td>Templates</td>
+<td>Rotinas pre-definidas de estudo</td>
+</tr>
+<tr>
+<td>Baixa</td>
+<td>Gamificacao</td>
+<td>Badges e conquistas por metas atingidas</td>
+</tr>
+<tr>
+<td>Baixa</td>
+<td>Calendario Google</td>
+<td>Integracao com Google Calendar</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="contatos-e-acessos">16. CONTATOS E ACESSOS</h1>
+<table>
+<thead>
+<tr>
+<th>Recurso</th>
+<th>Acesso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Repositorio</td>
+<td>github.com/mcoutinho2512/study-flow-pro</td>
+</tr>
+<tr>
+<td>Supabase</td>
+<td>supabase.com (projeto ndxphrglwwdftripdcjm)</td>
+</tr>
+<tr>
+<td>App Store Connect</td>
+<td>appstoreconnect.apple.com</td>
+</tr>
+<tr>
+<td>Google Cloud Console</td>
+<td>console.cloud.google.com (OAuth)</td>
+</tr>
+<tr>
+<td>Dominio Web</td>
+<td>planejamento.estudante.mcconsultoriati.com.br</td>
+</tr>
+<tr>
+<td>VPS</td>
+<td>69.6.250.114</td>
+</tr>
+<tr>
+<td>Conta Developer Apple</td>
+<td>developer.apple.com</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><em>Documento gerado em Marco de 2026</em> <em>MC Tech Consultoria e
+Servicos</em> <em>Todos os direitos reservados</em></p>
+</body>
+</html>
