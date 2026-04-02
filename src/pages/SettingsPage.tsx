@@ -1,4 +1,4 @@
-import { Bell, Moon, LogOut, ChevronRight, User, Target, Timer, Sun, Monitor } from "lucide-react";
+import { Bell, Moon, LogOut, ChevronRight, User, Target, Timer, Sun, Monitor, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
@@ -74,7 +74,10 @@ function applyTheme(mode: ThemeMode) {
 }
 
 export default function SettingsPage() {
-  const { user, signOut } = useAuth();
+  const { user, signOut, deleteAccount } = useAuth();
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState("");
+  const [deleting, setDeleting] = useState(false);
   const { data: profile } = useProfile();
   const updateProfile = useUpdateProfile();
   const navigate = useNavigate();
@@ -104,6 +107,22 @@ export default function SettingsPage() {
   const handleLogout = async () => {
     await signOut();
     navigate("/auth");
+  };
+
+  const handleDeleteAccount = async () => {
+    if (deleteConfirm !== "EXCLUIR") {
+      toast.error('Digite "EXCLUIR" para confirmar.');
+      return;
+    }
+    setDeleting(true);
+    const { error } = await deleteAccount();
+    if (error) {
+      toast.error(error);
+      setDeleting(false);
+    } else {
+      toast.success("Conta excluída com sucesso.");
+      navigate("/auth");
+    }
   };
 
   const openGoals = () => {
@@ -193,7 +212,50 @@ export default function SettingsPage() {
         <SettingItem icon={LogOut} label="Sair" danger onClick={handleLogout} />
       </div>
 
+      <div className="rounded-2xl bg-card shadow-card overflow-hidden mt-4">
+        <SettingItem icon={Trash2} label="Excluir minha conta" description="Apaga todos os seus dados permanentemente" danger onClick={() => { setDeleteConfirm(""); setDeleteOpen(true); }} />
+      </div>
+
       <p className="text-center text-xs text-muted-foreground mt-8">StudyFlow v1.0.0</p>
+
+      {/* Dialog Excluir Conta */}
+      <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="text-destructive">Excluir Conta</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 mt-2">
+            <p className="text-sm text-muted-foreground">
+              Esta ação é <strong>permanente e irreversível</strong>. Todos os seus dados serão apagados:
+            </p>
+            <ul className="text-sm text-muted-foreground list-disc pl-5 space-y-1">
+              <li>Matérias e anotações</li>
+              <li>Sessões de estudo</li>
+              <li>Planner semanal</li>
+              <li>Metas e configurações</li>
+              <li>Perfil e conta</li>
+            </ul>
+            <div>
+              <Label className="text-sm">Digite <strong>EXCLUIR</strong> para confirmar:</Label>
+              <Input
+                value={deleteConfirm}
+                onChange={(e) => setDeleteConfirm(e.target.value.toUpperCase())}
+                placeholder="EXCLUIR"
+                className="mt-1.5"
+                disabled={deleting}
+              />
+            </div>
+            <Button
+              variant="destructive"
+              className="w-full"
+              onClick={handleDeleteAccount}
+              disabled={deleting || deleteConfirm !== "EXCLUIR"}
+            >
+              {deleting ? "Excluindo..." : "Excluir minha conta permanentemente"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Dialog Metas */}
       <Dialog open={goalsOpen} onOpenChange={setGoalsOpen}>

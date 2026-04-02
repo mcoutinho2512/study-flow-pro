@@ -11,7 +11,9 @@ interface AuthContextType {
   signInWithEmail: (email: string, password: string) => Promise<{ error: string | null }>;
   signUpWithEmail: (email: string, password: string, fullName: string) => Promise<{ error: string | null }>;
   signInWithGoogle: () => Promise<{ error: string | null }>;
+  signInWithApple: () => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
+  deleteAccount: () => Promise<{ error: string | null }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -146,6 +148,75 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const signInWithApple = async (): Promise<{ error: string | null }> => {
+    try {
+      const isNative = Capacitor.isNativePlatform();
+      const redirectTo = isNative
+        ? 'com.studyflow.app://login'
+        : window.location.origin;
+
+      if (isNative) {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: "apple",
+          options: {
+            redirectTo,
+            skipBrowserRedirect: true,
+          },
+        });
+
+        if (error) {
+          console.error('[Auth] Apple OAuth error:', error.message);
+          return { error: "Erro ao conectar com Apple. Tente novamente." };
+        }
+
+        if (data?.url) {
+          window.open(data.url, '_system');
+        }
+      } else {
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: "apple",
+          options: { redirectTo },
+        });
+
+        if (error) {
+          console.error('[Auth] Apple OAuth error:', error.message);
+          return { error: "Erro ao conectar com Apple. Tente novamente." };
+        }
+      }
+
+      return { error: null };
+    } catch (err) {
+      console.error('[Auth] Apple OAuth catch:', err);
+      return { error: "Erro ao conectar com Apple. Tente novamente." };
+    }
+  };
+
+  const deleteAccount = async (): Promise<{ error: string | null }> => {
+    try {
+      // Deleta todos os dados do usuário (cascade no banco via FK)
+      // Depois faz signOut - a conta será removida pelo Supabase admin
+      const userId = user?.id;
+      if (!userId) return { error: "Usuário não encontrado." };
+
+      // Deleta dados na ordem correta (dependências primeiro)
+      await supabase.from("planner_blocks").delete().eq("user_id", userId);
+      await supabase.from("subject_notes").delete().eq("user_id", userId);
+      await supabase.from("study_sessions").delete().eq("user_id", userId);
+      await supabase.from("subjects").delete().eq("user_id", userId);
+      await supabase.from("profiles").delete().eq("id", userId);
+
+      // Signout
+      await supabase.auth.signOut();
+      setUser(null);
+      setSession(null);
+
+      return { error: null };
+    } catch (err) {
+      console.error('[Auth] Delete account error:', err);
+      return { error: "Erro ao excluir conta. Tente novamente." };
+    }
+  };
+
   const signOut = async () => {
     await supabase.auth.signOut();
     setUser(null);
@@ -153,7 +224,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, signInWithEmail, signUpWithEmail, signInWithGoogle, signOut }}>
+    <AuthContext.Provider value={{ user, session, loading, signInWithEmail, signUpWithEmail, signInWithGoogle, signInWithApple, signOut, deleteAccount }}>
       {children}
     </AuthContext.Provider>
   );
