@@ -1,0 +1,41 @@
+name: Supabase Keep-Alive
+
+# Faz um ping diário no Supabase para evitar que o projeto Free pause por inatividade.
+# Free tier do Supabase pausa após 7 dias sem atividade no banco.
+#
+# A apikey usada abaixo é a publishable_key (anon role), que já está embarcada
+# no bundle web público — não é segredo. Está hardcoded para simplificar o setup.
+
+on:
+  schedule:
+    # Diariamente às 12:00 UTC (09:00 BRT)
+    - cron: '0 12 * * *'
+  workflow_dispatch:  # permite rodar manualmente pela aba Actions
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Ping Supabase REST API
+        env:
+          SUPABASE_URL: https://ndxphrglwwdftripdcjm.supabase.co
+          SUPABASE_KEY: sb_publishable_hMC-Vw_VYXMEr4dIWs-vIw_KGcHIhni
+        run: |
+          set -euo pipefail
+          echo "→ Pinging Supabase…"
+          HTTP_CODE=$(curl -sS -o /tmp/response.json -w "%{http_code}" \
+            -H "apikey: ${SUPABASE_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_KEY}" \
+            -H "Prefer: count=exact" \
+            -H "Range: 0-0" \
+            "${SUPABASE_URL}/rest/v1/profiles?select=id")
+          echo "HTTP status: ${HTTP_CODE}"
+          # 200/206 = OK. 4xx ainda conta como atividade (db respondeu).
+          # Falha apenas se 5xx (server down) ou conexão impossível.
+          if [ "${HTTP_CODE}" -ge 500 ]; then
+            echo "❌ Supabase respondeu com erro de servidor"
+            cat /tmp/response.json
+            exit 1
+          fi
+          echo "✅ Supabase respondeu (status ${HTTP_CODE}) — projeto mantido ativo"
