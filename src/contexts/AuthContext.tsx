@@ -3,6 +3,8 @@ import type { User, Session, AuthError } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { Capacitor } from "@capacitor/core";
 import { App } from "@capacitor/app";
+import { Browser } from "@capacitor/browser";
+import { SignInWithApple, type SignInWithAppleResponse } from "@capacitor-community/apple-sign-in";
 
 interface AuthContextType {
   user: User | null;
@@ -36,6 +38,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let mounted = true;
 
+    // Safety timeout: se getSession travar (iPad/WebView), força loading=false em 5s
+    const safetyTimeout = setTimeout(() => {
+      if (mounted) setLoading(false);
+    }, 5000);
+
     const initAuth = async () => {
       try {
         const { data: { session }, error } = await supabase.auth.getSession();
@@ -50,6 +57,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setUser(null);
         }
       } finally {
+        clearTimeout(safetyTimeout);
         if (mounted) setLoading(false);
       }
     };
@@ -65,19 +73,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     // Capacitor: escuta deep links para OAuth callback
+    const EXPECTED_SCHEME = 'br.com.mcconsultoriati.estudae://';
     if (Capacitor.isNativePlatform()) {
       App.addListener('appUrlOpen', async ({ url }) => {
-        if (url.includes('access_token') || url.includes('code=') || url.includes('login')) {
-          // Extrai tokens do fragmento da URL
-          const hashPart = url.split('#')[1];
-          if (hashPart) {
-            const params = new URLSearchParams(hashPart);
-            const accessToken = params.get('access_token');
-            const refreshToken = params.get('refresh_token');
-            if (accessToken && refreshToken) {
-              await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
-            }
-          }
+        if (!url.startsWith(EXPECTED_SCHEME)) return;
+
+        // Fecha o browser in-app assim que o callback chegar
+        try { await Browser.close(); } catch {}
+
+        const hashPart = url.split('#')[1];
+        if (!hashPart) return;
+
+        const params = new URLSearchParams(hashPart);
+        const accessToken = params.get('access_token');
+        const refreshToken = params.get('refresh_token');
+        if (!accessToken || !refreshToken) return;
+
+        try {
+          await Promise.race([
+            supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken }),
+            new Promise((_, reject) => setTimeout(() => reject(new Error('setSession timeout')), 10000)),
+          ]);
+        } catch (err) {
+          console.error('[Auth] setSession error:', err);
         }
       });
     }
@@ -89,8 +107,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signInWithEmail = async (email: string, password: string): Promise<{ error: string | null }> => {
-    const { error } = await supabase.auth.signInWithPassword({ email: email.trim().toLowerCase(), password });
-    return { error: error ? sanitizeAuthError(error) : null };
+    try {
+      const signInPromise = supabase.auth.signInWithPassword({ email: email.trim().toLowerCase(), password });
+      const timeoutPromise = new Promise<{ error: AuthError }>((_, reject) =>
+        setTimeout(() => reject(new Error('timeout')), 15000)
+      );
+      const { error } = await Promise.race([signInPromise, timeoutPromise]);
+      return { error: error ? sanitizeAuthError(error) : null };
+    } catch {
+      return { error: "Tempo esgotado. Verifique sua conexão e tente novamente." };
+    }
   };
 
   const signUpWithEmail = async (email: string, password: string, fullName: string): Promise<{ error: string | null }> => {
@@ -106,7 +132,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const isNative = Capacitor.isNativePlatform();
       const redirectTo = isNative
-        ? 'com.studyflow.app://login'
+        ? 'br.com.mcconsultoriati.estudae://login'
         : window.location.origin;
 
       if (isNative) {
@@ -125,8 +151,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
 
         if (data?.url) {
-          // Abre no Safari nativo do sistema
-          window.open(data.url, '_system');
+          await Browser.open({ url: data.url, presentationStyle: 'popover' });
         }
       } else {
         // Na web: fluxo normal de redirect
@@ -150,44 +175,65 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signInWithApple = async (): Promise<{ error: string | null }> => {
     try {
-      const isNative = Capacitor.isNativePlatform();
-      const redirectTo = isNative
-        ? 'com.studyflow.app://login'
-        : window.location.origin;
+      const isIOS = Capacitor.getPlatform() === 'ios';
 
-      if (isNative) {
-        const { data, error } = await supabase.auth.signInWithOAuth({
-          provider: "apple",
-          options: {
-            redirectTo,
-            skipBrowserRedirect: true,
-          },
+      if (isIOS) {
+        // Gera um nonce aleatório e sua hash SHA256
+        const rawNonce = crypto.randomUUID();
+        const encoder = new TextEncoder();
+        const hashBuffer = await crypto.subtle.digest('SHA-256', encoder.encode(rawNonce));
+        const hashedNonce = Array.from(new Uint8Array(hashBuffer))
+          .map((b) => b.toString(16).padStart(2, '0'))
+          .join('');
+
+        // Fluxo nativo iOS: usa ASAuthorizationAppleIDProvider via plugin
+        const result: SignInWithAppleResponse = await SignInWithApple.authorize({
+          clientId: 'br.com.mcconsultoriati.estudae',
+          redirectURI: 'https://ndxphrglwwdftripdcjm.supabase.co/auth/v1/callback',
+          scopes: 'email name',
+          nonce: hashedNonce,
+        });
+
+        const identityToken = result.response?.identityToken;
+        if (!identityToken) {
+          return { error: "Apple não retornou um token de identidade." };
+        }
+
+        const { error } = await supabase.auth.signInWithIdToken({
+          provider: 'apple',
+          token: identityToken,
+          nonce: rawNonce,
         });
 
         if (error) {
-          console.error('[Auth] Apple OAuth error:', error.message);
-          return { error: "Erro ao conectar com Apple. Tente novamente." };
+          console.error('[Auth] Apple ID token error:', error.message);
+          return { error: `Apple: ${error.message}` };
         }
 
-        if (data?.url) {
-          window.open(data.url, '_system');
-        }
-      } else {
-        const { error } = await supabase.auth.signInWithOAuth({
-          provider: "apple",
-          options: { redirectTo },
-        });
+        return { error: null };
+      }
 
-        if (error) {
-          console.error('[Auth] Apple OAuth error:', error.message);
-          return { error: "Erro ao conectar com Apple. Tente novamente." };
-        }
+      // Web (e Android): fluxo OAuth padrão
+      const redirectTo = window.location.origin;
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "apple",
+        options: { redirectTo },
+      });
+
+      if (error) {
+        console.error('[Auth] Apple OAuth error:', error.message);
+        return { error: "Erro ao conectar com Apple. Tente novamente." };
       }
 
       return { error: null };
     } catch (err) {
-      console.error('[Auth] Apple OAuth catch:', err);
-      return { error: "Erro ao conectar com Apple. Tente novamente." };
+      const message = err instanceof Error ? err.message : 'erro desconhecido';
+      console.error('[Auth] Apple sign in catch:', err);
+      // Usuário cancelou - não mostra erro
+      if (message.toLowerCase().includes('cancel') || message.includes('1001')) {
+        return { error: null };
+      }
+      return { error: `Apple: ${message}` };
     }
   };
 

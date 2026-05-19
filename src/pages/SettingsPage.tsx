@@ -59,7 +59,7 @@ function validateNumber(value: string, min: number, max: number, label: string):
 type ThemeMode = "light" | "dark" | "system";
 
 function getStoredTheme(): ThemeMode {
-  return (localStorage.getItem("studyflow-theme") as ThemeMode) || "system";
+  return (localStorage.getItem("estudae-theme") as ThemeMode) || "system";
 }
 
 function applyTheme(mode: ThemeMode) {
@@ -70,7 +70,7 @@ function applyTheme(mode: ThemeMode) {
   } else {
     root.classList.toggle("dark", mode === "dark");
   }
-  localStorage.setItem("studyflow-theme", mode);
+  localStorage.setItem("estudae-theme", mode);
 }
 
 export default function SettingsPage() {
@@ -196,7 +196,7 @@ export default function SettingsPage() {
           )}
         </div>
         <div>
-          <p className="font-semibold text-foreground">{profile?.full_name || "Usuário StudyFlow"}</p>
+          <p className="font-semibold text-foreground">{profile?.full_name || "Usuário Estudae"}</p>
           <p className="text-sm text-muted-foreground">{user?.email ?? ""}</p>
         </div>
       </div>
@@ -216,7 +216,7 @@ export default function SettingsPage() {
         <SettingItem icon={Trash2} label="Excluir minha conta" description="Apaga todos os seus dados permanentemente" danger onClick={() => { setDeleteConfirm(""); setDeleteOpen(true); }} />
       </div>
 
-      <p className="text-center text-xs text-muted-foreground mt-8">StudyFlow v1.0.0</p>
+      <p className="text-center text-xs text-muted-foreground mt-8">Estudae v1.0.0</p>
 
       {/* Dialog Excluir Conta */}
       <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>

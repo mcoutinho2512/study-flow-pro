@@ -1,7 +1,7 @@
-# StudyFlow - Metadados App Store
+# Estudae - Metadados App Store
 
 ## Nome do App
-StudyFlow - Plano de Estudos
+Estudae - Plano de Estudos
 
 ## Subtitulo (30 chars max)
 Foco. Disciplina. Resultado.
@@ -20,9 +20,9 @@ Gratis
 
 ## Descricao (pt-BR)
 
-Organize seus estudos, acompanhe seu progresso e alcance seus objetivos com o StudyFlow.
+Organize seus estudos, acompanhe seu progresso e alcance seus objetivos com o Estudae.
 
-O StudyFlow e o app ideal para estudantes que querem levar seus estudos a serio. Com um planner semanal visual, timer Pomodoro integrado e relatorios detalhados, voce tem tudo o que precisa para estudar de forma inteligente e produtiva.
+O Estudae e o app ideal para estudantes que querem levar seus estudos a serio. Com um planner semanal visual, timer Pomodoro integrado e relatorios detalhados, voce tem tudo o que precisa para estudar de forma inteligente e produtiva.
 
 PLANNER SEMANAL
 - Organize sua semana de estudos em uma grade visual
@@ -80,7 +80,7 @@ https://planejamento.estudante.mcconsultoriati.com.br
 
 ## Notas para Revisao da Apple (Review Notes)
 Login de teste:
-Email: teste@studyflow.app
+Email: teste@estudae.app
 Senha: Teste12345
 
 O app requer conexao com a internet para sincronizar dados.

@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.studyflow.app',
-  appName: 'StudyFlow',
+  appId: 'br.com.mcconsultoriati.estudae',
+  appName: 'Estudae',
   webDir: 'dist',
   server: {
     androidScheme: 'https',

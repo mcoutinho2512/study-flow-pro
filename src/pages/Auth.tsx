@@ -82,32 +82,41 @@ export default function Auth() {
     if (!checkRateLimit()) return;
 
     setLoading(true);
-    if (isLogin) {
-      const { error } = await signInWithEmail(email, password);
-      recordAttempt(!error);
-      if (error) {
-        toast.error(error);
+    try {
+      if (isLogin) {
+        const { error } = await signInWithEmail(email, password);
+        recordAttempt(!error);
+        if (error) {
+          toast.error(error);
+        } else {
+          navigate("/");
+        }
       } else {
-        navigate("/");
+        const { error } = await signUpWithEmail(email, password, fullName);
+        recordAttempt(!error);
+        if (error) {
+          toast.error(error);
+        } else {
+          toast.success("Conta criada! Verifique seu e-mail para confirmar.");
+        }
       }
-    } else {
-      const { error } = await signUpWithEmail(email, password, fullName);
-      recordAttempt(!error);
-      if (error) {
-        toast.error(error);
-      } else {
-        toast.success("Conta criada! Verifique seu e-mail para confirmar.");
-      }
+    } catch (err) {
+      console.error('[Auth] handleSubmit error:', err);
+      toast.error("Erro inesperado. Tente novamente.");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleGoogle = async () => {
     if (!checkRateLimit()) return;
     setLoading(true);
-    const { error } = await signInWithGoogle();
-    if (error) {
-      toast.error(error);
+    try {
+      const { error } = await signInWithGoogle();
+      if (error) toast.error(error);
+    } catch {
+      toast.error("Erro ao conectar com Google. Tente novamente.");
+    } finally {
       setLoading(false);
     }
   };
@@ -115,9 +124,12 @@ export default function Auth() {
   const handleApple = async () => {
     if (!checkRateLimit()) return;
     setLoading(true);
-    const { error } = await signInWithApple();
-    if (error) {
-      toast.error(error);
+    try {
+      const { error } = await signInWithApple();
+      if (error) toast.error(error);
+    } catch {
+      toast.error("Erro ao conectar com Apple. Tente novamente.");
+    } finally {
       setLoading(false);
     }
   };
@@ -132,9 +144,9 @@ export default function Auth() {
       >
         <div className="text-center mb-10">
           <div className="h-12 w-12 rounded-2xl bg-primary flex items-center justify-center mx-auto mb-4">
-            <span className="text-primary-foreground font-bold text-xl">S</span>
+            <span className="text-primary-foreground font-bold text-xl">E</span>
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">StudyFlow</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">Estudae</h1>
           <p className="text-sm text-muted-foreground mt-1">Disciplina profissional.</p>
         </div>
 

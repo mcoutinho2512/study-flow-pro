@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -32,7 +32,15 @@ const queryClient = new QueryClient({
 
 function AuthRedirect() {
   const { session, loading } = useAuth();
-  if (loading) return null;
+  const [timedOut, setTimedOut] = useState(false);
+
+  useEffect(() => {
+    if (!loading) return;
+    const timer = setTimeout(() => setTimedOut(true), 5000);
+    return () => clearTimeout(timer);
+  }, [loading]);
+
+  if (loading && !timedOut) return null;
   if (session) return <Navigate to="/" replace />;
   return <Auth />;
 }
